@@ -8,6 +8,7 @@
     backgroundColor:string;
     boardmap:Speace[][];
     t:Tpiece;
+    gameInProgress:boolean;
     
     constructor(){
         this.canvas = document.querySelector('.myCanvas');
@@ -15,6 +16,7 @@
         this.boardmap = [];
         this.zeroBoard();
         this.initBoard();
+        this.gameInProgress =  true;
         this.t = new Tpiece();
     }
 
@@ -22,7 +24,9 @@
         return Math.floor(this.width/2)
     }
     decrTime(){
+        if(this.gameInProgress){
         this.t.decr();
+        }
     }
 
     zeroBoard(){
@@ -77,7 +81,8 @@
                entry.draw(this.ctx,left);
            }
         }
-        this.t.draw(this.boardmap,left);
+        var success = this.t.draw(this.boardmap,left);
+        console.log("succes ="+success);
 
 
     }
