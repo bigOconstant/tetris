@@ -1,5 +1,4 @@
-
- class Board{
+class Board{
 
     canvas:any;
     width:number;
@@ -32,8 +31,7 @@
         var success = this.t.draw(this.boardmap,this.left);
 
         if(!success){
-        console.log("succes ="+success);
-        this.gameInProgress = false;
+            this.gameInProgress = false;
         }
 
         }
@@ -65,9 +63,8 @@
             this.boardmap.push(middleList);
             middleList = [];
         }
-        console.log(this.boardmap);
 
-        
+   
 
     }
 
@@ -87,18 +84,12 @@
         this.ctx.strokeRect(left, 60, 400, 800);
 
         this.drawLines(left);
-       
-        //this.t.initPos(left + (40*5),60);
+
         for(let topentry of this.boardmap){
            for(let entry of topentry){
                entry.draw(this.ctx,left);
            }
         }
-        // var success = this.t.draw(this.boardmap,left);
-
-        // if(!success){
-        // console.log("succes ="+success);
-        // }
 
 
     }
@@ -106,8 +97,7 @@
        
         
         this.ctx.strokeStyle = 'rgb(91, 89, 89)';
-       // var offset = 40;
-       // var lineLeft = left+offset;
+
         var lineBottom = 60;
         var lineTop = 60+800;
 
@@ -124,10 +114,6 @@
             this.ctx.stroke();
         }
 
-
-        // this.ctx.moveTo(left+40,60);
-        // this.ctx.lineTo(left+40,60+800);
-        // this.ctx.stroke();
     }
 
 

@@ -10,12 +10,14 @@ class Tpiece {
      col:number;
      flipped:boolean;
      firstTime:Boolean;
+     originalColor:string;
      constructor(){
          //this.kind = kind;
         this.initP();
      }
      initP(){
         this.color = "rgb(19, 237, 11)";
+        this.originalColor = "rgb(66, 66, 66)";
         this.flipped = Math.random() >= 0.5;
         this.started = false;
         this.speiceList = [];
@@ -61,11 +63,7 @@ class Tpiece {
      }
 
      draw(boardmap:Speace[][],left:number){
-       // console.log(this.flipped);
-            //Handle case stick
-            // if(this.row === 0){
-            //     console.log("First row!");
-            // }
+
         if(this.kind === "I"){
             if(this.flipped){
               return  this.drawIFlipped(boardmap,left);
@@ -76,35 +74,20 @@ class Tpiece {
      }
 
      drawIFlipped(boardmap:Speace[][],left:number){//verticle
-            
-            //console.log("Draw flipped");
           
             if(this.row === 0){
                 
-                 if(!boardmap[this.row][this.col].empty){
-                     console.log("This if full")
-                 }
                  for(var i = 0; i < 4; i++){
                      if(!boardmap[this.row+i][this.col].empty){
-                         console.log("This is full returning false");
+                         for(var j = 0; j < i; ++j){
+                            boardmap[this.row + j  ][this.col].color = this.color;
+                            boardmap[this.row + j ][this.col].empty = false;
+                         }
                          return false;//game over
                      }
                  }
                  
              }
-           
-            for(var i = 0; i < boardmap[3].length; ++i){
-                if(this.row === 0){
-                   // console.log("First Row");
-                   // console.log("Row:"+this.row + " Col:"+this.col);
-                    
-                }
-                if(boardmap[this.row][i].empty === false){
-                   // return false;//need to think about this one. 
-                  // console.log("Found not empty");
-                   //console.log(boardmap[this.row][i]);
-                }
-            }
         
             if(boardmap[this.row]
             && boardmap[this.row+1] 
@@ -112,34 +95,21 @@ class Tpiece {
             && boardmap[this.row+3] )
             {
               
-                if(!boardmap[this.row  ][this.col].empty || !boardmap[this.row+1][this.col].empty
-                    || !boardmap[this.row+2][this.col].empty || !boardmap[this.row+3][this.col].empty)//You lose{
-                    {
-                       // console.log("I believe we have found a collision in the start");
-                        // this.initP();
-                        // return false;
-                    }
+
     
                 if(boardmap[this.row-1]){
-                    boardmap[this.row -1][this.col].color = "rgb(66, 66, 66)";
+                    boardmap[this.row -1][this.col].color = this.originalColor;
                     boardmap[this.row -1][this.col].empty = true;
                 }
 
                 
                
     
-            
-                boardmap[this.row  ][this.col].color = this.color;
-                boardmap[this.row  ][this.col].empty = false;
-
-                boardmap[this.row+1][this.col].color = this.color;
-                boardmap[this.row+1][this.col].empty = false;
-
-                boardmap[this.row+2][this.col].color = this.color;
-                boardmap[this.row+2][this.col].empty = false;
-            
-                boardmap[this.row+3][this.col].color = this.color;
-                boardmap[this.row+3][this.col].empty = false;
+                for(var i = 0; i < 4; i++){
+                    boardmap[this.row +i ][this.col].color = this.color;
+                    boardmap[this.row + i  ][this.col].empty = false;
+                }
+               
 
 
                 if(this.row < 15 && !boardmap[this.row+4][this.col].empty){
@@ -163,11 +133,14 @@ class Tpiece {
         if(this.row === 0){
                 
             if(!boardmap[this.row][this.col].empty){
-                console.log("This if full")
+              
             }
             for(var i = 0; i < 4; i++){
                 if(!boardmap[this.row][this.col+i].empty){
-                    console.log("This is full returning false horizontal");
+                    for(var j = 0; j < i; ++j){
+                        boardmap[this.row  ][this.col+j].color = this.color;
+                        boardmap[this.row  ][this.col+j].empty = false;
+                    }
                     return false;//game over
                 }
             }
@@ -181,42 +154,21 @@ class Tpiece {
             && boardmap[this.row][this.col+2]  
             && boardmap[this.row][this.col+3]  )
             {
-                if(!boardmap[this.row  ][this.col].empty || !boardmap[this.row][this.col+1].empty ||
-                    !boardmap[this.row][this.col+2].empty || !boardmap[this.row][this.col+3].empty){
-                        //console.log("I believe we have found a collision in the start");
-                        // this.initP();
-                        // return false;
-                    }
-              
+
                 if(boardmap[this.row-1]){
-                    boardmap[this.row -1][this.col].color =   "rgb(66, 66, 66)";
-                    boardmap[this.row -1][this.col].empty = true;
 
-                    boardmap[this.row -1][this.col+1].color = "rgb(66, 66, 66)";
-                    boardmap[this.row -1][this.col+1].empty = true;
+                    for(var i = 0; i < 4; i++){
+                        boardmap[this.row -1][this.col+i].color =   this.originalColor;
+                        boardmap[this.row -1][this.col +i].empty = true;
+                    }
 
-                    boardmap[this.row -1][this.col+2].color = "rgb(66, 66, 66)";
-                    boardmap[this.row -1][this.col+2].empty = true;
-                    
-                    
-                    boardmap[this.row -1][this.col+3].color = "rgb(66, 66, 66)";
-                    boardmap[this.row -1][this.col+3].empty = true;
                 }
 
-
     
-    
-            boardmap[this.row  ][this.col].color = this.color;
-            boardmap[this.row  ][this.col].empty = false;
-
-            boardmap[this.row][this.col+1].color = this.color;
-            boardmap[this.row][this.col+1].empty = false;
-            
-            boardmap[this.row][this.col+2].color = this.color;
-            boardmap[this.row][this.col+2].empty = false;
-
-            boardmap[this.row][this.col+3].color = this.color;
-            boardmap[this.row][this.col+3].empty = false;
+            for(var i = 0; i < 4; i++){
+                boardmap[this.row  ][this.col+i].color = this.color;
+                boardmap[this.row  ][this.col+i].empty = false;
+            }
 
 
              for(var i = 0; i <4; ++i){
@@ -229,10 +181,7 @@ class Tpiece {
              }
              return true;
   
-            } if(!boardmap[this.row+1]){
-               
-                this.row = 0;
-                this.col = 0;
+            } if(!boardmap[this.row+1]){      
                 this.initP();
                 return true;
             }
