@@ -134,12 +134,12 @@ export class TPiece{
             console.log("Now we need to delete row:"+i);
 
             for(var k = i; k >1;--k){
-                for(var l = 0; l < width; ++l){
+                for(var l = 0; l < width+1; ++l){
                  boardmap[k][l].empty = boardmap[k-1][l].empty;   
                  boardmap[k][l].color = boardmap[k-1][l].color; 
                 }
             }
-             for(var j = width; j > -1; j--){
+             for(var j = width+1; j > -1; j--){
                  boardmap[0][j].empty = true;
                  boardmap[0][j].color = this.originalColor;    // }
              }
