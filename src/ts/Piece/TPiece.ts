@@ -52,20 +52,25 @@ export class TPiece{
     }
     rightPress(boardmap:Piece[][],left:number){
 
-       if(this.flipped){//Delete all elements to right
+       if(this.flipped){
+           //Delete all elements to right
+           if(this.col < 9){
            for(var i = 0; i < 4; i++){
                boardmap[this.row +i ][this.col].color = this.originalColor;
                boardmap[this.row + i  ][this.col].empty = true;
            }
+           ++this.col;
+        }
         }else{
+            if(this.col < 6){
            for(var i = 0; i < 4; i++){
                boardmap[this.row ][this.col+i].color =   this.originalColor;
                boardmap[this.row ][this.col +i].empty = true;
            }
+           ++this.col;
         }
-        if(this.col<10){
-            ++this.col;
         }
+       
         this.draw(boardmap,left);
     }
 
