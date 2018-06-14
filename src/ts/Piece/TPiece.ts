@@ -8,15 +8,15 @@ export class TPiece{
     started:boolean;
     flipped:boolean;
     firstTime:Boolean;
-    originalColor:string;
+    originalColor:string = "rgb(66, 66, 66)";
     player:IPlayer;
     
-    constructor(){
+    constructor(boardmap:Piece[][]){
         //this.kind = kind;
-       this.initP();
+       this.initP(boardmap);
     }
 
-    initP(){
+    initP(boardmap:Piece[][]){
        this.flipped = Math.random() >= 0.5;
        this.started = false;
        this.speiceList = [];
@@ -29,6 +29,7 @@ export class TPiece{
        }else {
           this.player.col = Math.floor((Math.random() * 6) + 0);
        }
+       this.checkBoardForRows(boardmap);
     }
 
     leftPress(boardmap:Piece[][],left:number){
@@ -73,20 +74,23 @@ export class TPiece{
     }
 
     draw(boardmap:Piece[][],left:number){
-
+        var returnval = false;
        if(this.kind === "I"){
            if(this.flipped){
-             return  this.drawIFlipped(boardmap,left);
+            returnval =  this.drawIFlipped(boardmap,left);
            }else if(!this.flipped){
-              return  this.drawINotFlipped(boardmap,left);
+            returnval =  this.drawINotFlipped(boardmap,left);
            }
        }
+       
+       return returnval;
+       
     }
 
     drawIFlipped(boardmap:Piece[][],left:number){//verticle
          var valtoreturn = this.player.drawFlipped(boardmap,left);
          if (this.player.done){
-            this.initP();
+            this.initP(boardmap);
          }
          return valtoreturn;
     }
@@ -94,7 +98,7 @@ export class TPiece{
     drawINotFlipped(boardmap:Piece[][],left:number){ //horizontal
         var valtoreturn = this.player.drawNotFlipped(boardmap,left);
         if(this.player.done){
-            this.initP();
+            this.initP(boardmap);
         }
         return valtoreturn;
       
@@ -103,21 +107,47 @@ export class TPiece{
         this.player.decr();
     }
 
-    checkBoardForRows(boardmap:Piece[][]){
-
-       boardmap.forEach(element => {
-           var NeedToDelete = true;;
-           element.forEach(elementChild => {
-               if(elementChild.empty){
-                   NeedToDelete = false;
-               }
-           });
-           if(NeedToDelete){
-               console.log("Need to delete this row");
-           }
-       });
-
+    transform(){
+        if(this.flipped){
+            console.log("Do stuff here");
+        }else{
+            console.log("Do other stuff here");
+        }
     }
 
+    checkBoardForRows(boardmap:Piece[][]){
+       // console.log("Calling draw");
+      
+
+       var height = boardmap.length -1;
+       var width = boardmap[0].length -1;
+       console.log("Height:"+height+" Width:"+width);
+
+       for(var i = height; i > -1; i--){
+        var NeedToDelete = true;
+           for(var j = width; j > -1; j--){
+            if(boardmap[i][j].empty){
+                NeedToDelete = false;
+            }
+           }
+           if(NeedToDelete){
+            console.log("Now we need to delete row:"+i);
+
+            for(var k = i; k >1;--k){
+                for(var l = 0; l < width; ++l){
+                 boardmap[k][l].empty = boardmap[k-1][l].empty;   
+                 boardmap[k][l].color = boardmap[k-1][l].color; 
+                }
+            }
+             for(var j = width; j > -1; j--){
+                 boardmap[0][j].empty = true;
+                 boardmap[0][j].color = this.originalColor;    // }
+             }
+             this.checkBoardForRows(boardmap);
+
+       }
+
+    }
+    }
 
 }

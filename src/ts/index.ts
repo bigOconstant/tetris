@@ -12,7 +12,7 @@ function descTime(){
 }
 // board.drawBoard();
 var timerForLoadingResult = window.setInterval(drawBoard, 20);
-var timerForLoadingResult = window.setInterval(descTime, 1000);
+var timerForLoadingResult = window.setInterval(descTime, 300);
 window.addEventListener('keydown',check,false);
 
 function check(e:any) {

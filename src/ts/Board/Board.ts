@@ -20,7 +20,7 @@ export class Board{
         this.zeroBoard();
         this.initBoard();
         this.gameInProgress =  true;
-        this.t = new TPiece();
+        this.t = new TPiece(this.boardmap);
         var center = this.getCenter();
          this.left = center - 200;
     }
