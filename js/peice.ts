@@ -194,6 +194,7 @@ class Tpiece {
 
      setcolor(){
         var color = Math.floor((Math.random() * 6) + 1);
+        
          switch(color){
             case 0:
                 this.color = "rgb(11, 98, 237)";
@@ -202,7 +203,7 @@ class Tpiece {
                 this.color = "rgb(19, 237, 11)";
                 break;
             case 2:
-                this.color = "rgb(237, 19, 11)";
+                this.color = "rgb(249, 72, 90)";
                 break;
             case 3:
                 this.color = "rgb(245, 255, 66)";
