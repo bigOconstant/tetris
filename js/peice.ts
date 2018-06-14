@@ -1,5 +1,3 @@
-
-
 class Tpiece {
 
      kind: string;
@@ -31,6 +29,44 @@ class Tpiece {
         }else {
            this.col = Math.floor((Math.random() * 6) + 0);
         }
+     }
+
+     leftPress(boardmap:Speace[][],left:number){
+         console.log("Calling left press");
+         if(this.flipped){//Delete all elements to right
+            for(var i = 0; i < 4; i++){
+                boardmap[this.row +i ][this.col].color = this.originalColor;
+                boardmap[this.row + i  ][this.col].empty = true;
+            }
+         }else{
+            for(var i = 0; i < 4; i++){
+                boardmap[this.row ][this.col+i].color =   this.originalColor;
+                boardmap[this.row ][this.col +i].empty = true;
+            }
+         }
+         if(this.col >0){
+             --this.col; 
+         }
+        
+         this.draw(boardmap,left);
+     }
+     rightPress(boardmap:Speace[][],left:number){
+
+        if(this.flipped){//Delete all elements to right
+            for(var i = 0; i < 4; i++){
+                boardmap[this.row +i ][this.col].color = this.originalColor;
+                boardmap[this.row + i  ][this.col].empty = true;
+            }
+         }else{
+            for(var i = 0; i < 4; i++){
+                boardmap[this.row ][this.col+i].color =   this.originalColor;
+                boardmap[this.row ][this.col +i].empty = true;
+            }
+         }
+         if(this.col<10){
+             ++this.col;
+         }
+         this.draw(boardmap,left);
      }
 
 
@@ -113,6 +149,8 @@ class Tpiece {
 
 
                 if(this.row < 15 && !boardmap[this.row+4][this.col].empty){
+                    // Must check board and clear.
+                    this.checkBoardForRows(boardmap); 
                     this.initP();
                     return true;
                     
@@ -123,6 +161,9 @@ class Tpiece {
             }else if(!boardmap[this.row+3]){
                 this.row = 0;
                 this.col = Math.floor((Math.random() * 10) + 0);
+
+                //We have stopped must calculate if we need to clear.
+                this.checkBoardForRows(boardmap);
                 this.initP();
                 return true
             }
@@ -175,13 +216,15 @@ class Tpiece {
                 if(this.row < 19 && !boardmap[this.row+1][this.col + i].empty){
                     this.row = 0;
                 this.col = 0;
+                this.checkBoardForRows(boardmap);
                     this.initP();
                     return true;
                 }
              }
              return true;
   
-            } if(!boardmap[this.row+1]){      
+            } if(!boardmap[this.row+1]){  
+                this.checkBoardForRows(boardmap);    
                 this.initP();
                 return true;
             }
@@ -218,6 +261,22 @@ class Tpiece {
                 this.color = "rgb(255, 154, 66)";
                 break;
          }
+     }
+
+     checkBoardForRows(boardmap:Speace[][]){
+
+        boardmap.forEach(element => {
+            var NeedToDelete = true;;
+            element.forEach(elementChild => {
+                if(elementChild.empty){
+                    NeedToDelete = false;
+                }
+            });
+            if(NeedToDelete){
+                console.log("Need to delete this row");
+            }
+        });
+
      }
 
 

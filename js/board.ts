@@ -21,10 +21,33 @@ class Board{
         var center = this.getCenter();
          this.left = center - 200;
     }
+    getPiece(){
+        return this.t;
+    }
 
     getCenter(){
         return Math.floor(this.width/2)
     }
+
+    keyPress(e:any){
+        if (e.keyCode == '38') {
+            // up arrow
+        }
+        else if (e.keyCode == '40') {
+            // down arrow
+        }
+        else if (e.keyCode == '37') {
+           // left arrow
+           this.t.leftPress(this.boardmap,this.left);
+        }
+        else if (e.keyCode == '39') {
+           // right arrow
+           this.t.rightPress(this.boardmap,this.left);
+        }
+          
+  
+    }
+
     decrTime(){
         if(this.gameInProgress){
         this.t.decr();
