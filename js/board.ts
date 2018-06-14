@@ -4,6 +4,7 @@
     canvas:any;
     width:number;
     height:number;
+    left:number;
     ctx:any;
     backgroundColor:string;
     boardmap:Speace[][];
@@ -18,6 +19,8 @@
         this.initBoard();
         this.gameInProgress =  true;
         this.t = new Tpiece();
+        var center = this.getCenter();
+         this.left = center - 200;
     }
 
     getCenter(){
@@ -26,6 +29,13 @@
     decrTime(){
         if(this.gameInProgress){
         this.t.decr();
+        var success = this.t.draw(this.boardmap,this.left);
+
+        if(!success){
+        console.log("succes ="+success);
+        this.gameInProgress = false;
+        }
+
         }
     }
 
@@ -39,6 +49,7 @@
     initBoard(){
         var center = this.getCenter();
         var left = center -200;
+        this.left = left;
         var top = 60;
         var localcolor = "rgb(66, 66, 66)";
         for(var i = 0; i < 20; i++){
@@ -54,6 +65,7 @@
             this.boardmap.push(middleList);
             middleList = [];
         }
+        console.log(this.boardmap);
 
         
 
@@ -68,6 +80,7 @@
 
         var center = this.getCenter();
         var left = center - 200;
+        this.left = left;
 
         this.ctx.strokeStyle = 'rgb(255, 255, 255)';
         this.ctx.lineWidth = 1;
@@ -75,14 +88,17 @@
 
         this.drawLines(left);
        
-        this.t.initPos(left + (40*5),60);
+        //this.t.initPos(left + (40*5),60);
         for(let topentry of this.boardmap){
            for(let entry of topentry){
                entry.draw(this.ctx,left);
            }
         }
-        var success = this.t.draw(this.boardmap,left);
-        console.log("succes ="+success);
+        // var success = this.t.draw(this.boardmap,left);
+
+        // if(!success){
+        // console.log("succes ="+success);
+        // }
 
 
     }

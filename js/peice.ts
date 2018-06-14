@@ -9,6 +9,7 @@ class Tpiece {
      row:number;
      col:number;
      flipped:boolean;
+     firstTime:Boolean;
      constructor(){
          //this.kind = kind;
         this.initP();
@@ -18,7 +19,8 @@ class Tpiece {
         this.flipped = Math.random() >= 0.5;
         this.started = false;
         this.speiceList = [];
-        this.row = 0;
+        this.row = -1;
+        this.firstTime = true;
         
         this.generateType();
         this.setcolor();
@@ -28,12 +30,7 @@ class Tpiece {
            this.col = Math.floor((Math.random() * 6) + 0);
         }
      }
-     initPos(left:number,top:number){
-         //start on Left Row
-        
-       // var peice = new Speace(this.color,left,top);
-    
-     }
+
 
      generateType(){
          var type = Math.floor((Math.random() * 7) + 1);
@@ -66,6 +63,9 @@ class Tpiece {
      draw(boardmap:Speace[][],left:number){
        // console.log(this.flipped);
             //Handle case stick
+            // if(this.row === 0){
+            //     console.log("First row!");
+            // }
         if(this.kind === "I"){
             if(this.flipped){
               return  this.drawIFlipped(boardmap,left);
@@ -75,10 +75,36 @@ class Tpiece {
         }
      }
 
-     drawIFlipped(boardmap:Speace[][],left:number){
+     drawIFlipped(boardmap:Speace[][],left:number){//verticle
             
-            console.log("Draw flipped");
-        
+            //console.log("Draw flipped");
+          
+            if(this.row === 0){
+                
+                 if(!boardmap[this.row][this.col].empty){
+                     console.log("This if full")
+                 }
+                 for(var i = 0; i < 4; i++){
+                     if(!boardmap[this.row+i][this.col].empty){
+                         console.log("This is full returning false");
+                         return false;//game over
+                     }
+                 }
+                 
+             }
+           
+            for(var i = 0; i < boardmap[3].length; ++i){
+                if(this.row === 0){
+                   // console.log("First Row");
+                   // console.log("Row:"+this.row + " Col:"+this.col);
+                    
+                }
+                if(boardmap[this.row][i].empty === false){
+                   // return false;//need to think about this one. 
+                  // console.log("Found not empty");
+                   //console.log(boardmap[this.row][i]);
+                }
+            }
         
             if(boardmap[this.row]
             && boardmap[this.row+1] 
@@ -89,7 +115,7 @@ class Tpiece {
                 if(!boardmap[this.row  ][this.col].empty || !boardmap[this.row+1][this.col].empty
                     || !boardmap[this.row+2][this.col].empty || !boardmap[this.row+3][this.col].empty)//You lose{
                     {
-                        console.log("I believe we have found a collision in the start");
+                       // console.log("I believe we have found a collision in the start");
                         // this.initP();
                         // return false;
                     }
@@ -132,20 +158,32 @@ class Tpiece {
             }
      }
 
-     drawINotFlipped(boardmap:Speace[][],left:number){
-       console.log("this.row:"+this.row," This.col:"+this.col);
-       console.log(boardmap);
+     drawINotFlipped(boardmap:Speace[][],left:number){ //horizontal
+ 
+        if(this.row === 0){
+                
+            if(!boardmap[this.row][this.col].empty){
+                console.log("This if full")
+            }
+            for(var i = 0; i < 4; i++){
+                if(!boardmap[this.row][this.col+i].empty){
+                    console.log("This is full returning false horizontal");
+                    return false;//game over
+                }
+            }
+            
+        }
 
-         
 
-        if(boardmap[this.row][this.col]
+     
+        if(boardmap[this.row] && boardmap[this.row][this.col]
             && boardmap[this.row][this.col+1] 
             && boardmap[this.row][this.col+2]  
             && boardmap[this.row][this.col+3]  )
             {
                 if(!boardmap[this.row  ][this.col].empty || !boardmap[this.row][this.col+1].empty ||
                     !boardmap[this.row][this.col+2].empty || !boardmap[this.row][this.col+3].empty){
-                        console.log("I believe we have found a collision in the start");
+                        //console.log("I believe we have found a collision in the start");
                         // this.initP();
                         // return false;
                     }
