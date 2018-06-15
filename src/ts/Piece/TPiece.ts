@@ -40,6 +40,11 @@ export class TPiece{
         this.player.rightPress(boardmap,left);
         this.draw(boardmap,left);
     }
+    upPress(boardmap:Piece[][],left:number){
+        this.player.upPress(boardmap,left);
+        this.flipped = !this.flipped;
+        this.draw(boardmap,left);
+    }
 
 
     generateType(flipped:boolean){

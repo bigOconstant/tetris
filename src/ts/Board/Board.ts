@@ -35,6 +35,7 @@ export class Board{
     keyPress(e:any){
         if (e.keyCode == '38') {
             // up arrow
+            this.t.upPress(this.boardmap,this.left);
         }
         else if (e.keyCode == '40') {
             // down arrow

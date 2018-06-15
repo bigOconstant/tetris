@@ -105,6 +105,42 @@ export class IPiece implements IPlayer{
          }
          }
     }
+    upPress(boardmap:Piece[][],left:number){
+        if(this.flipped){
+            console.log("Change!");
+            //Check if there is room on left
+            if(this.col >0 &&  this.col < 8 && this.row < 17){
+                console.log("Fir check pass!")
+                //In range where it's possible now check for obstructions
+                if(boardmap[this.row][this.col-1].empty){
+                    if(boardmap[this.row][this.col+1].empty && boardmap[this.row][this.col+2].empty){
+                        console.log("We can transform");
+                        for(var i = 0; i <4 ; ++i){
+
+                            this.flipped = !this.flipped;
+                            console.log(boardmap[this.row+i][this.col]);
+                            boardmap[this.row+i][this.col].color = this.originalColor;
+                            boardmap[this.row+i][this.col].empty = true;
+                            // return this.flipped;
+                            
+                        }
+                        
+                           return this.flipped;
+                    }
+                }else{
+                    return this.flipped;
+                }
+            }else{
+                return this.flipped;
+            }
+            //Check if there is room on right
+        }
+        else{
+            return this.flipped;
+            console.log("Change Again");
+        }
+
+    }
     drawFlipped(boardmap:Piece[][],left:number){//vertical
         if(this.row === 0){
                
