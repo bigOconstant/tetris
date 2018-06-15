@@ -6,6 +6,7 @@ export class IPiece implements IPlayer{
         this.flipped = Math.random() < 0.5;
         this.setcolor();
         this.done = false;
+    
     }
     done:boolean;
     flipped:boolean;
@@ -109,7 +110,7 @@ export class IPiece implements IPlayer{
     }
     upPress(boardmap:Piece[][],left:number){
         if(this.flipped){
-            this.flipped = !this.flipped;
+           // this.flipped = !this.flipped;
             //console.log("Change!");
             //Check if there is room on left
             if(this.col >0 &&  this.col < 8 && this.row < 17){
@@ -127,6 +128,7 @@ export class IPiece implements IPlayer{
                             // return this.flipped;
                             
                         }
+                        this.flipped = !this.flipped;
                         
                           // return this.flipped;
                     }
@@ -138,7 +140,35 @@ export class IPiece implements IPlayer{
             }
             //Check if there is room on right
         }
-        else{
+        else{//horizontal
+            console.log("Checking if we can rotate horizontal");
+            var canChange  =true;
+            console.log("This row:"+this.row);
+            for(var i = 0; i < 4; ++i){
+                boardmap[this.row][this.col+i].color = this.originalColor;
+                boardmap[this.row][this.col+i].empty = true;
+            }
+            if(this.row >15){
+                canChange = false;
+            }
+            for(var i = 0; i < 4; ++i){
+                console.log(boardmap[this.row+i][this.col].empty);
+                if(!boardmap[this.row+i][this.col].empty){
+                    canChange = false;
+                }    
+            }
+            if(canChange){
+                console.log("Horizontal can change!");
+                this.flipped = !this.flipped;
+                for(var i = 0; i < 4; ++i){
+                    boardmap[this.row][this.col+i].color = this.originalColor;
+                    boardmap[this.row][this.col+i].empty = true;
+                }
+                for(var i = 0; i < 4; ++i){
+                    boardmap[this.row+i][this.col].color = this.originalColor;
+                    boardmap[this.row+i][this.col].empty = true;
+                }
+            }
            // return this.flipped;
          //   console.log("Change Again");
         }
