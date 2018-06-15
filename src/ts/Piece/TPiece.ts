@@ -119,27 +119,27 @@ export class TPiece{
        // console.log("Calling draw");
       
 
-       var height = boardmap.length -1;
-       var width = boardmap[0].length -1;
-       console.log("Height:"+height+" Width:"+width);
+       var height = 20;
+       var width = 10;
 
-       for(var i = height; i > -1; i--){
+
+       for(var i = height-1; i > -1; i--){
         var NeedToDelete = true;
-           for(var j = width; j > -1; j--){
+           for(var j = width-1; j > -1; j--){
             if(boardmap[i][j].empty){
                 NeedToDelete = false;
             }
            }
            if(NeedToDelete){
-            console.log("Now we need to delete row:"+i);
+
 
             for(var k = i; k >1;--k){
-                for(var l = 0; l < width+1; ++l){
+                for(var l = 0; l < width; ++l){
                  boardmap[k][l].empty = boardmap[k-1][l].empty;   
                  boardmap[k][l].color = boardmap[k-1][l].color; 
                 }
             }
-             for(var j = width+1; j > -1; j--){
+             for(var j = 0; j < width; j++){
                  boardmap[0][j].empty = true;
                  boardmap[0][j].color = this.originalColor;    // }
              }
