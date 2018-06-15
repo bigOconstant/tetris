@@ -2,8 +2,8 @@ import {IPlayer} from './IPlayer';
 import {Piece} from '../Piece/Piece';
 
 export class IPiece implements IPlayer{
-    constructor(flipped:boolean){
-        this.flipped = flipped;
+    constructor(){
+        this.flipped = Math.random() < 0.5;
         this.setcolor();
         this.done = false;
     }
@@ -74,6 +74,7 @@ export class IPiece implements IPlayer{
         //  }
     }
     rightPress(boardmap:Piece[][],left:number){
+        console.log("This.flipped = "+this.flipped);
         if(this.flipped){
             //Delete all elements to right
             if(this.col < 9){
@@ -94,6 +95,7 @@ export class IPiece implements IPlayer{
             //++this.col;
          }
          }else{
+             
              if(this.col < 6){
             for(var i = 0; i < 4; i++){
                 boardmap[this.row ][this.col+i].color =   this.originalColor;
@@ -107,40 +109,50 @@ export class IPiece implements IPlayer{
     }
     upPress(boardmap:Piece[][],left:number){
         if(this.flipped){
-            console.log("Change!");
+            this.flipped = !this.flipped;
+            //console.log("Change!");
             //Check if there is room on left
             if(this.col >0 &&  this.col < 8 && this.row < 17){
-                console.log("Fir check pass!")
+             //  console.log("Fir check pass!")
                 //In range where it's possible now check for obstructions
                 if(boardmap[this.row][this.col-1].empty){
                     if(boardmap[this.row][this.col+1].empty && boardmap[this.row][this.col+2].empty){
-                        console.log("We can transform");
+                      //  console.log("We can transform");
                         for(var i = 0; i <4 ; ++i){
 
-                            this.flipped = !this.flipped;
-                            console.log(boardmap[this.row+i][this.col]);
+                           
+                          //  console.log(boardmap[this.row+i][this.col]);
                             boardmap[this.row+i][this.col].color = this.originalColor;
                             boardmap[this.row+i][this.col].empty = true;
                             // return this.flipped;
                             
                         }
                         
-                           return this.flipped;
+                          // return this.flipped;
                     }
                 }else{
-                    return this.flipped;
+                   // return this.flipped;
                 }
             }else{
-                return this.flipped;
+               // return this.flipped;
             }
             //Check if there is room on right
         }
         else{
-            return this.flipped;
-            console.log("Change Again");
+           // return this.flipped;
+         //   console.log("Change Again");
         }
 
     }
+
+    draw(boardmap:Piece[][],left:number){
+        if(this.flipped){
+           return this.drawFlipped(boardmap,left);
+        }else{
+            return this.drawNotFlipped(boardmap,left);
+        }
+    }
+
     drawFlipped(boardmap:Piece[][],left:number){//vertical
         if(this.row === 0){
                
@@ -263,7 +275,7 @@ export class IPiece implements IPlayer{
             } if(!boardmap[this.row+1]){  
                 //this.checkBoardForRows(boardmap);    
                // this.initP();
-              
+                console.log("Finishing!");
                 this.done = true;
                 return true;
             }

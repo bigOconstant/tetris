@@ -6,7 +6,6 @@ export class TPiece{
     color: string;
     speiceList:Piece[];
     started:boolean;
-    flipped:boolean;
     firstTime:Boolean;
     originalColor:string = "rgb(66, 66, 66)";
     player:IPlayer;
@@ -14,21 +13,35 @@ export class TPiece{
     constructor(boardmap:Piece[][]){
         //this.kind = kind;
        this.initP(boardmap);
+       
+    }
+
+    printBoard(boardmap:Piece[][]){
+        for(var i = 0; i <20; ++i){
+            var string = "";
+            for (var j = 0; j <10; ++j){
+                if(boardmap[i][j].empty){
+                    string = string+"x";
+                }else{
+                    string = string +"o";
+                }
+            }
+            console.log(string);
+            //console.log("_");
+        }
+
     }
 
     initP(boardmap:Piece[][]){
-       this.flipped = Math.random() >= 0.5;
        this.started = false;
        this.speiceList = [];
-       this.generateType(this.flipped);
+       this.generateType();
        this.player.row = -1;
        this.firstTime = true;
 
-       if(this.kind === "I" && !this.flipped){
+      
        this.player.col = Math.floor((Math.random() * 6) + 0);
-       }else {
-          this.player.col = Math.floor((Math.random() * 6) + 0);
-       }
+     
        this.checkBoardForRows(boardmap);
     }
 
@@ -41,13 +54,18 @@ export class TPiece{
         this.draw(boardmap,left);
     }
     upPress(boardmap:Piece[][],left:number){
+        
+        this.printBoard(boardmap);
+        console.log("Attempting transformation");
         this.player.upPress(boardmap,left);
-        this.flipped = !this.flipped;
+        
         this.draw(boardmap,left);
+        this.printBoard(boardmap);
+
     }
 
 
-    generateType(flipped:boolean){
+    generateType(){
         var type = Math.floor((Math.random() * 7) + 1);
        //  switch(type){
        //      case 0:
@@ -74,51 +92,45 @@ export class TPiece{
        //  }
        this.kind = "I";
        if(this.kind === "I"){
-           this.player = new IPiece(flipped);
+           this.player = new IPiece();
        }
     }
 
     draw(boardmap:Piece[][],left:number){
-        var returnval = false;
-       if(this.kind === "I"){
-           if(this.flipped){
-            returnval =  this.drawIFlipped(boardmap,left);
-           }else if(!this.flipped){
-            returnval =  this.drawINotFlipped(boardmap,left);
-           }
-       }
-       
-       return returnval;
-       
-    }
-
-    drawIFlipped(boardmap:Piece[][],left:number){//verticle
-         var valtoreturn = this.player.drawFlipped(boardmap,left);
-         if (this.player.done){
-            this.initP(boardmap);
-         }
-         return valtoreturn;
-    }
-
-    drawINotFlipped(boardmap:Piece[][],left:number){ //horizontal
-        var valtoreturn = this.player.drawNotFlipped(boardmap,left);
+        console.log("calling draw");
         if(this.player.done){
-            this.initP(boardmap);
+            this.player = new IPiece();
         }
-        return valtoreturn;
-      
+      var returnval =  this.player.draw(boardmap,left);
+      if(this.player.done){
+        this.player = new IPiece();
+        this.initP(boardmap);
     }
+    return returnval;
+    }
+
+    // drawIFlipped(boardmap:Piece[][],left:number){//verticle
+    //      var valtoreturn = this.player.drawFlipped(boardmap,left);
+    //      if (this.player.done){
+    //         this.initP(boardmap);
+    //      }
+    //      return valtoreturn;
+    // }
+
+    // drawINotFlipped(boardmap:Piece[][],left:number){ //horizontal
+    //     var valtoreturn = this.player.drawNotFlipped(boardmap,left);
+    //     if(this.player.done){
+    //         this.initP(boardmap);
+    //     }
+    //     return valtoreturn;
+      
+    // }
     decr(){
         this.player.decr();
+        
     }
 
-    transform(){
-        if(this.flipped){
-            console.log("Do stuff here");
-        }else{
-            console.log("Do other stuff here");
-        }
-    }
+
 
     checkBoardForRows(boardmap:Piece[][]){
        // console.log("Calling draw");
