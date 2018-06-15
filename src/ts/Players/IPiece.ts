@@ -49,15 +49,29 @@ export class IPiece implements IPlayer{
                 boardmap[this.row +i ][this.col].color = this.originalColor;
                 boardmap[this.row + i  ][this.col].empty = true;
             }
+            var noabstruction = true;
+            if(this.col >0){
+                for(var i = 0; i < 4; ++i){
+                    if(boardmap[this.row +i][this.col -1].empty == false){
+                        noabstruction = false;
+                    }
+                }
+            }
+            if(this.col >0 && noabstruction){
+                --this.col; 
+            }
          }else{
             for(var i = 0; i < 4; i++){
                 boardmap[this.row ][this.col+i].color =   this.originalColor;
                 boardmap[this.row ][this.col +i].empty = true;
             }
+            if(this.col >0 && boardmap[this.row][this.col-1].empty){
+                --this.col; 
+            }
          }
-         if(this.col >0){
-             --this.col; 
-         }
+        //  if(this.col >0 ){
+        //      --this.col; 
+        //  }
     }
     rightPress(boardmap:Piece[][],left:number){
         if(this.flipped){
@@ -67,7 +81,17 @@ export class IPiece implements IPlayer{
                 boardmap[this.row +i ][this.col].color = this.originalColor;
                 boardmap[this.row + i  ][this.col].empty = true;
             }
-            ++this.col;
+            var noabstruction = true;
+            if(this.col <9){
+                for(var i = 0; i < 4; ++i){
+                    if(boardmap[this.row +i][this.col +1].empty == false){
+                        noabstruction = false;
+                    }
+                }
+                if(this.col <9 && noabstruction){
+                    ++this.col;; 
+                }}
+            //++this.col;
          }
          }else{
              if(this.col < 6){
@@ -75,7 +99,9 @@ export class IPiece implements IPlayer{
                 boardmap[this.row ][this.col+i].color =   this.originalColor;
                 boardmap[this.row ][this.col +i].empty = true;
             }
+            if(this.col < 6 && boardmap[this.row ][this.col +4].empty ){
             ++this.col;
+            }
          }
          }
     }
@@ -174,7 +200,7 @@ export class IPiece implements IPlayer{
  
                     for(var i = 0; i < 4; i++){
                         boardmap[this.row -1][this.col+i].color =   this.originalColor;
-                        
+
                         boardmap[this.row -1][this.col +i].empty = true;
                     }
  
