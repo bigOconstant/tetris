@@ -79,7 +79,7 @@ export class IPiece implements IPlayer{
          }
          }
     }
-    drawFlipped(boardmap:Piece[][],left:number){
+    drawFlipped(boardmap:Piece[][],left:number){//vertical
         if(this.row === 0){
                
             for(var i = 0; i < 4; i++){
@@ -107,19 +107,26 @@ export class IPiece implements IPlayer{
                boardmap[this.row -1][this.col].empty = true;
            }
 
-           
+            
+              
           
 
            for(var i = 0; i < 4; i++){
+              
+               if(boardmap[this.row + i  ][this.col].empty){
                boardmap[this.row +i ][this.col].color = this.color;
                boardmap[this.row + i  ][this.col].empty = false;
+               }
+               
            }
           
-
+           if( !boardmap[this.row+4] || !boardmap[this.row+4][this.col].empty) {//Last square
+            this.done = true;
+       return true;
+        }
 
            if(this.row < 15 && !boardmap[this.row+4][this.col].empty){
-               // Must check board and clear.
-               //this.checkBoardForRows(boardmap); 
+            //This here probably doesn't work
                this.done = true;
                return true;
                
@@ -167,6 +174,7 @@ export class IPiece implements IPlayer{
  
                     for(var i = 0; i < 4; i++){
                         boardmap[this.row -1][this.col+i].color =   this.originalColor;
+                        
                         boardmap[this.row -1][this.col +i].empty = true;
                     }
  
@@ -183,8 +191,7 @@ export class IPiece implements IPlayer{
                 if(this.row < 19 && !boardmap[this.row+1][this.col + i].empty){
                     this.row = 0;
                 this.col = 0;
-                //this.checkBoardForRows(boardmap);
-                   // this.initP();
+
                     this.done = true;
                     return true;
                 }
@@ -194,6 +201,7 @@ export class IPiece implements IPlayer{
             } if(!boardmap[this.row+1]){  
                 //this.checkBoardForRows(boardmap);    
                // this.initP();
+              
                 this.done = true;
                 return true;
             }
