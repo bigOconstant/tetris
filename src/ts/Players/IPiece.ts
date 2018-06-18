@@ -1,11 +1,11 @@
 import {IPlayer} from './IPlayer';
 import {Piece} from '../Piece/Piece';
-
 export class IPiece implements IPlayer{
     constructor(){
         this.flipped = Math.random() < 0.5;
         this.setcolor();
         this.done = false;
+        this.col = Math.floor((Math.random() * 6) + 0);
     
     }
     done:boolean;
@@ -75,7 +75,7 @@ export class IPiece implements IPlayer{
         //  }
     }
     rightPress(boardmap:Piece[][],left:number){
-        console.log("This.flipped = "+this.flipped);
+        //console.log("This.flipped = "+this.flipped);
         if(this.flipped){
             //Delete all elements to right
             if(this.col < 9){
@@ -141,9 +141,9 @@ export class IPiece implements IPlayer{
             //Check if there is room on right
         }
         else{//horizontal
-            console.log("Checking if we can rotate horizontal");
+            //console.log("Checking if we can rotate horizontal");
             var canChange  =true;
-            console.log("This row:"+this.row);
+           // console.log("This row:"+this.row);
             for(var i = 0; i < 4; ++i){
                 boardmap[this.row][this.col+i].color = this.originalColor;
                 boardmap[this.row][this.col+i].empty = true;
@@ -152,13 +152,13 @@ export class IPiece implements IPlayer{
                 canChange = false;
             }
             for(var i = 0; i < 4; ++i){
-                console.log(boardmap[this.row+i][this.col].empty);
+                //console.log(boardmap[this.row+i][this.col].empty);
                 if(!boardmap[this.row+i][this.col].empty){
                     canChange = false;
                 }    
             }
             if(canChange){
-                console.log("Horizontal can change!");
+              //  console.log("Horizontal can change!");
                 this.flipped = !this.flipped;
                 for(var i = 0; i < 4; ++i){
                     boardmap[this.row][this.col+i].color = this.originalColor;
@@ -174,7 +174,9 @@ export class IPiece implements IPlayer{
         }
 
     }
-
+    downPress(boardmap:Piece[][]){
+        console.log("Not Implemented");
+    }
     draw(boardmap:Piece[][],left:number){
         if(this.flipped){
            return this.drawFlipped(boardmap,left);
@@ -182,6 +184,11 @@ export class IPiece implements IPlayer{
             return this.drawNotFlipped(boardmap,left);
         }
     }
+
+    drawVertical(){
+        //Do later
+    }
+
 
     drawFlipped(boardmap:Piece[][],left:number){//vertical
         if(this.row === 0){
@@ -305,7 +312,7 @@ export class IPiece implements IPlayer{
             } if(!boardmap[this.row+1]){  
                 //this.checkBoardForRows(boardmap);    
                // this.initP();
-                console.log("Finishing!");
+              //  console.log("Finishing!");
                 this.done = true;
                 return true;
             }

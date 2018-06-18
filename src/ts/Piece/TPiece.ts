@@ -1,6 +1,7 @@
 import {Piece} from '../Piece/Piece';
 import {IPlayer} from '../Players/IPlayer';
 import {IPiece} from '../Players/IPiece';
+import { OPiece } from '../Players/OPiece';
 export class TPiece{
     kind: string;
     color: string;
@@ -40,7 +41,7 @@ export class TPiece{
        this.firstTime = true;
 
       
-       this.player.col = Math.floor((Math.random() * 6) + 0);
+       //this.player.col = Math.floor((Math.random() * 6) + 0);
      
        this.checkBoardForRows(boardmap);
     }
@@ -55,18 +56,22 @@ export class TPiece{
     }
     upPress(boardmap:Piece[][],left:number){
         
-        this.printBoard(boardmap);
-        console.log("Attempting transformation");
+      //  this.printBoard(boardmap);
+     //   console.log("Attempting transformation");
         this.player.upPress(boardmap,left);
         
         this.draw(boardmap,left);
-        this.printBoard(boardmap);
+       // this.printBoard(boardmap);
 
+    }
+    downPress(boardmap:Piece[][],left){
+        this.player.downPress(boardmap);
+        this.draw(boardmap,left);
     }
 
 
     generateType(){
-        var type = Math.floor((Math.random() * 7) + 1);
+        var type = Math.floor((Math.random() * 2) + 1);
        //  switch(type){
        //      case 0:
        //          this.kind = "0";
@@ -90,14 +95,27 @@ export class TPiece{
        //          this.kind = "L";
        //          break;
        //  }
-       this.kind = "I";
+     //  console.log("type here = "+type);
+       switch(type){
+           case 1:
+           this.kind = "I"
+           break;
+           case 2:
+           this.kind = "0"
+           break;
+
+       }
+     //  console.log("About to do next kind:"+this.kind);
        if(this.kind === "I"){
-           this.player = new IPiece();
+           this.player = new IPiece(); //new OPiece();
+       }else if(this.kind === "0"){
+         //  console.log("Creating Opiece");
+           this.player = new OPiece();
        }
     }
 
     draw(boardmap:Piece[][],left:number){
-        console.log("calling draw");
+     //   console.log("calling draw");
         if(this.player.done){
             this.player = new IPiece();
         }

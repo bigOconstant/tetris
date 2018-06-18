@@ -38,7 +38,7 @@ export class Board{
             this.t.upPress(this.boardmap,this.left);
         }
         else if (e.keyCode == '40') {
-            // down arrow
+           this.t.downPress(this.boardmap,this.left);
         }
         else if (e.keyCode == '37') {
            // left arrow
@@ -54,6 +54,7 @@ export class Board{
 
     decrTime(){
         if(this.gameInProgress){
+         //   console.log("Game in porgress");
         this.t.decr();
         var success = this.t.draw(this.boardmap,this.left);
 
@@ -62,6 +63,7 @@ export class Board{
         }
 
         }
+       // console.log("No in progress");
     }
 
     zeroBoard(){
