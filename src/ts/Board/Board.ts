@@ -23,7 +23,29 @@ export class Board{
         this.t = new TPiece(this.boardmap);
         var center = this.getCenter();
          this.left = center - 200;
+
+
+        this.canvas.addEventListener("touchstart", function (e) {
+        var mousePos = this.getTouchPos(this.canvas, e);
+        console.log("Touching");
+        if (mousePos.x > center){
+            this.t.rightPress(this.boardmap,this.left);
+        }else if(mousePos.x < center){
+            this.t.leftPress(this.boardmap,this.left);
+        }
+  
+}, false);
+
+
     }
+
+     getTouchPos(canvasDom, touchEvent) {
+        var rect = canvasDom.getBoundingClientRect();
+        return {
+          x: touchEvent.touches[0].clientX - rect.left,
+          y: touchEvent.touches[0].clientY - rect.top
+        };
+      }
     getPiece(){
         return this.t;
     }
