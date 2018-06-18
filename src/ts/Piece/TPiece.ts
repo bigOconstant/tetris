@@ -2,6 +2,7 @@ import {Piece} from '../Piece/Piece';
 import {IPlayer} from '../Players/IPlayer';
 import {IPiece} from '../Players/IPiece';
 import { OPiece } from '../Players/OPiece';
+import { XPiece } from '../Players/XPiece';
 export class TPiece{
     kind: string;
     color: string;
@@ -71,7 +72,7 @@ export class TPiece{
 
 
     generateType(){
-        var type = Math.floor((Math.random() * 2) + 1);
+        var type = Math.floor((Math.random() * 3) + 1);
        //  switch(type){
        //      case 0:
        //          this.kind = "0";
@@ -98,20 +99,27 @@ export class TPiece{
      //  console.log("type here = "+type);
        switch(type){
            case 1:
-           this.kind = "I"
+           this.kind = "I";
            break;
            case 2:
-           this.kind = "0"
+           this.kind = "0";
+           break;
+           case 3:
+           this.kind = "X";
            break;
 
        }
+      // this.kind = "X";
      //  console.log("About to do next kind:"+this.kind);
        if(this.kind === "I"){
            this.player = new IPiece(); //new OPiece();
        }else if(this.kind === "0"){
          //  console.log("Creating Opiece");
            this.player = new OPiece();
-       }
+       }else if(this.kind === "X"){
+        //  console.log("Creating Opiece");
+          this.player = new XPiece();
+      }
     }
 
     draw(boardmap:Piece[][],left:number){
