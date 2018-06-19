@@ -109,6 +109,7 @@ export class TPiece{
            break;
 
        }
+       this.kind = "X";
       // this.kind = "X";
      //  console.log("About to do next kind:"+this.kind);
        if(this.kind === "I"){

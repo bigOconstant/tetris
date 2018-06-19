@@ -16,7 +16,7 @@ export class XPiece implements IPlayer{// this is the real t piece
         this.setcolor();
         this.done = false;
         this.col = Math.floor((Math.random() * 6) + 2);
-        this.state = Math.floor((Math.random()*4) +1);
+        this.state = 1;//Math.floor((Math.random()*4) +1);
       //  console.log("Creating object: col:"+this.col);
 
     }
@@ -248,16 +248,37 @@ export class XPiece implements IPlayer{// this is the real t piece
                 break;
         }
     }
+    checkBelowup(boardmap:Piece[][]){
+        var below = false;
+        if(!boardmap[this.row+1][this.col].empty){
+            below = true;
+        }
+        if(!boardmap[this.row+1][this.col+1].empty){
+            below = true;
+        }
+        if(!boardmap[this.row+1][this.col+2].empty){
+            below = true;
+        }
+        console.log("below ="+below);
+        return below;
+    }
 
     draw(boardmap:Piece[][],left:number){
         switch(this.state){
             case 1:
-                
+               // this.deleteSelf(boardmap,0);
                 if(this.row>18){
                     this.done = true;
                     return true;
                     break;
                 }
+                if(this.checkBelowup(boardmap)){
+                    this.done = true;
+                    return true;
+                    break;
+                }
+
+
                 if(this.row > 0){
                     this.deleteSelf(boardmap,1);
                 }
