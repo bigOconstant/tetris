@@ -1,5 +1,6 @@
 import {IPlayer} from './IPlayer';
 import {Piece} from '../Piece/Piece';
+import {Coordinate} from './Coordinate';
 export class IPiece implements IPlayer{
     constructor(){
         this.flipped = Math.random() < 0.5;
@@ -13,7 +14,8 @@ export class IPiece implements IPlayer{
     row:number;
     col:number;
     originalColor:string = "rgb(66, 66, 66)";
-    color:string;z
+    color:string;
+    coordinates:Coordinate[];
     decr(){
         this.row = this.row + 1;
     }

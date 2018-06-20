@@ -39,15 +39,15 @@ export class XPiece implements IPlayer{// this is the real t piece
             this.state = 1;
         }
     }
-    drawToPoint(boardmap:Piece[][],x:number,y:number){
+    drawToPoint(boardmap:Piece[][],Cord:Coordinate){
 
         
-        if(boardmap[x] && boardmap[x][y]){
-        boardmap[x][y].color = this.color;
-        boardmap[x][y].empty = false;
-        this.coordinates.push(new Coordinate(x,y));
+        if(boardmap[Cord.row] && boardmap[Cord.row][Cord.col]){
+        boardmap[Cord.row][Cord.col].color = this.color;
+        boardmap[Cord.row][Cord.col].empty = false;
+        this.coordinates.push(new Coordinate(Cord.row,Cord.col));
         }else{
-            console.log("Trying to draw something that doesn't exists at boardmap["+x+"]["+y+"]");
+            console.log("Trying to draw something that doesn't exists at boardmap["+Cord.row+"]["+Cord.col+"]");
         }
     }
     deleteToPoint(boardmap:Piece[][],x:number,y:number){
@@ -70,10 +70,11 @@ export class XPiece implements IPlayer{// this is the real t piece
         [^]
      [ ][ ][ ]
         */
-        this.drawToPoint(boardmap,this.row,this.col+1);
-        this.drawToPoint(boardmap,this.row+1,this.col);
-        this.drawToPoint(boardmap,this.row+1,this.col+1);
-        this.drawToPoint(boardmap,this.row+1,this.col+2);
+        
+        this.drawToPoint(boardmap,new Coordinate(this.row,this.col+1));
+        this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col));
+        this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col+1));
+        this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col+2));
     }
 
     drawSelfFlipped(boardmap:Piece[][]){
@@ -85,10 +86,10 @@ export class XPiece implements IPlayer{// this is the real t piece
         */
 
        
-       this.drawToPoint(boardmap,this.row+1,this.col);
-       this.drawToPoint(boardmap,this.row+1 ,this.col+1);
-       this.drawToPoint(boardmap,this.row+1 ,this.col+2);
-       this.drawToPoint(boardmap,this.row+2 ,this.col+1);
+       this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col));
+       this.drawToPoint(boardmap,new Coordinate(this.row+1 ,this.col+1));
+       this.drawToPoint(boardmap,new Coordinate(this.row+1 ,this.col+2));
+       this.drawToPoint(boardmap,new Coordinate(this.row+2 ,this.col+1));
     }
 
     drawSelfRight(boardmap:Piece[][]){
@@ -97,10 +98,10 @@ export class XPiece implements IPlayer{// this is the real t piece
         [<][>]
         [v]
         */
-       this.drawToPoint(boardmap,this.row,this.col+1);
-       this.drawToPoint(boardmap,this.row+1,this.col+1);
-       this.drawToPoint(boardmap,this.row+1,this.col +2);
-       this.drawToPoint(boardmap,this.row+2,this.col+1)
+       this.drawToPoint(boardmap,new Coordinate(this.row,this.col+1));
+       this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col+1));
+       this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col +2));
+       this.drawToPoint(boardmap,new Coordinate(this.row+2,this.col+1));
 
     }
 
@@ -110,10 +111,10 @@ export class XPiece implements IPlayer{// this is the real t piece
      [<][>]
         [v]
         */
-       this.drawToPoint(boardmap,this.row,this.col+1);
-       this.drawToPoint(boardmap,this.row+1,this.col+1);
-       this.drawToPoint(boardmap,this.row+1,this.col);
-       this.drawToPoint(boardmap,this.row+2,this.col+1)
+       this.drawToPoint(boardmap,new Coordinate(this.row,this.col+1));
+       this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col+1));
+       this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col));
+       this.drawToPoint(boardmap,new Coordinate(this.row+2,this.col+1));
 
     }
 
@@ -128,7 +129,6 @@ export class XPiece implements IPlayer{// this is the real t piece
                     break;
                     }
                 }else{
-                    console.log("Just calling delete self!")
                     this.deleteCoordinates(boardmap);
                     break;
                 }
@@ -158,7 +158,6 @@ export class XPiece implements IPlayer{// this is the real t piece
                 break;
             case 4:
             if(this.col >0){
-                console.log("Pressing left as left!");
                 if(!this.checkLeftLeft(boardmap,0)){
                 this.deleteCoordinates(boardmap);
                 this.col = --this.col;
@@ -562,16 +561,7 @@ export class XPiece implements IPlayer{// this is the real t piece
         return true;
     }
 
-    drawFlipped(boardmap:Piece[][],left:number){
-        console.log("Drawing");
-    }
-    drawNotFlipped(boardmap:Piece[][],left:number){
-        console.log("Drawing");
-    }
-
     decr(){
-        // console.log("This.row = "+this.row);
-        // console.log("Calling descr");
          this.row = this.row + 1;
      }
 
