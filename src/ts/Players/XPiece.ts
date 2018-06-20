@@ -1,6 +1,14 @@
 import {IPlayer} from './IPlayer';
 import {Piece} from '../Piece/Piece';
 
+export class coordinate{
+    row:number;
+    col:number;
+    constructor(r:number,c:number){
+        this.row = r;
+        this.col = c;
+    }
+}
 export class XPiece implements IPlayer{// this is the real t piece
 
     done:boolean;
@@ -10,12 +18,13 @@ export class XPiece implements IPlayer{// this is the real t piece
     col:number;
     originalColor:string = "rgb(66, 66, 66)";
     color:string;
-    isSlide:boolean;
+    coordinates:coordinate[];
+    
 
     constructor(){
+        this.coordinates = [];
         this.flipped = Math.random() < 0.5;
         this.setcolor();
-        this.isSlide = false;
         this.done = false;
         this.col = Math.floor((Math.random() * 6) + 2);
         this.state = 1;//Math.floor((Math.random()*4) +1);
@@ -35,6 +44,7 @@ export class XPiece implements IPlayer{// this is the real t piece
         if(boardmap[x] && boardmap[x][y]){
         boardmap[x][y].color = this.color;
         boardmap[x][y].empty = false;
+        this.coordinates.push(new coordinate(x,y));
         }else{
             console.log("Trying to draw something that doesn't exists at boardmap["+x+"]["+y+"]");
         }
@@ -47,6 +57,11 @@ export class XPiece implements IPlayer{// this is the real t piece
             console.log("Trying to delete something that doesn't exists at boardmap["+x+"]["+y+"]");
         }
     }
+    deleteCoordinates(boardmap){
+        this.coordinates.forEach(element => {
+            this.deleteToPoint(boardmap,element.row,element.col);
+        });
+    }
 
     drawSelf(boardmap:Piece[][]){
         /*  
@@ -58,16 +73,7 @@ export class XPiece implements IPlayer{// this is the real t piece
         this.drawToPoint(boardmap,this.row+1,this.col+1);
         this.drawToPoint(boardmap,this.row+1,this.col+2);
     }
-    deleteSelf(boardmap:Piece[][],modifier:number){
-                /*  
-        [^]
-     [ ][ ][ ]
-        */
-       this.deleteToPoint(boardmap,this.row- modifier,this.col+1);
-       this.deleteToPoint(boardmap,this.row+1 -modifier,this.col);
-       this.deleteToPoint(boardmap,this.row+1 -modifier,this.col+1);
-       this.deleteToPoint(boardmap,this.row+1 -modifier,this.col+2);
-    }
+
     drawSelfFlipped(boardmap:Piece[][]){
         /*
 
@@ -82,16 +88,7 @@ export class XPiece implements IPlayer{// this is the real t piece
        this.drawToPoint(boardmap,this.row+1 ,this.col+2);
        this.drawToPoint(boardmap,this.row+2 ,this.col+1);
     }
-    deleteSelfFlipped(boardmap:Piece[][],modifier:number){
-            /*
-       [<][^][>]
-          [v]
-        */
-       this.deleteToPoint(boardmap,this.row+1 - modifier,this.col);
-       this.deleteToPoint(boardmap,this.row+1 - modifier,this.col+1);
-       this.deleteToPoint(boardmap,this.row+1 - modifier,this.col+2);
-       this.deleteToPoint(boardmap,this.row+2 - modifier,this.col+1);
-    }
+
     drawSelfRight(boardmap:Piece[][]){
         /*
         [^]
@@ -105,17 +102,7 @@ export class XPiece implements IPlayer{// this is the real t piece
 
     }
 
-    deleteSelfRight(boardmap:Piece[][],modifier:number){
-              /*
-        [^]
-        [<][>]
-        [v]
-        */
-       this.deleteToPoint(boardmap,this.row - modifier,this.col+1);
-       this.deleteToPoint(boardmap,this.row+1 - modifier,this.col+1);
-       this.deleteToPoint(boardmap,this.row+1 - modifier,this.col +2);
-       this.deleteToPoint(boardmap,this.row+2 - modifier,this.col+1) 
-    }
+
 
     drawSelfLeft(boardmap:Piece[][]){
         /*
@@ -130,28 +117,8 @@ export class XPiece implements IPlayer{// this is the real t piece
 
     }
 
-    deleteSelfLeft(boardmap:Piece[][],xmodifier:number,ymodifier:number){
-              /*
-        [^]
-     [<][>]
-        [v]
-        */
-       this.deleteToPoint(boardmap,this.row - xmodifier,this.col+1 - ymodifier);
-       this.deleteToPoint(boardmap,this.row+1 - xmodifier,this.col+1 - ymodifier);
-       this.deleteToPoint(boardmap,this.row+1 - xmodifier,this.col - ymodifier);
-       this.deleteToPoint(boardmap,this.row+2 - xmodifier,this.col+1 - ymodifier)
-    }
 
-    // case 1:
-    //             if(this.col <7){
-    //                 this.deleteSelf(boardmap,0);
-    //                 this.col = ++this.col;
-    //                 this.isSlide = true;
-    //                 break;
-    //             }
-    //             this.deleteSelf(boardmap,0);
-    //             break;
-   
+
     leftPress(boardmap:Piece[][],left:number){
         switch(this.state){
             case 1:
@@ -161,65 +128,47 @@ export class XPiece implements IPlayer{// this is the real t piece
                         console.log("this.row:"+this.row+" this.col:"+this.col)
                    // this.deleteSelf(boardmap,0);
                     //this.col = --this.col;
-                    this.deleteSelf(boardmap,0);
+                    //this.deleteSelf(boardmap,0);
+                    this.deleteCoordinates(boardmap);
                     this.col = --this.col;
-                    this.isSlide = true;
                    // this.draw(boardmap,left);
                     break;
                     }
                 }else{
                     console.log("Just calling delete self!")
-                    this.deleteSelf(boardmap,0);
+                    this.deleteCoordinates(boardmap);
                     break;
                 }
                 //this.draw(boardmap,left);
-                this.deleteSelf(boardmap,0);
+                this.deleteCoordinates(boardmap);
                 //this.draw(boardmap,0);
                 break;
             case 2:
             if(this.col >-1){
-                this.deleteSelfRight(boardmap,0);
+                this.deleteCoordinates(boardmap);
                 this.col = --this.col;
                 break;
             }
-            this.deleteSelfRight(boardmap,0);
+            this.deleteCoordinates(boardmap);
                 break;
             case 3:
             if(this.col >0){
-                this.deleteSelfFlipped(boardmap,0);
+                this.deleteCoordinates(boardmap);
                 this.col = --this.col;
                 break;
             }
-            this.deleteSelfFlipped(boardmap,0);
+            this.deleteCoordinates(boardmap);
                 break;
             case 4:
             if(this.col >0){
-                this.deleteSelfLeft(boardmap,0,0);
+                this.deleteCoordinates(boardmap);
                 this.col = --this.col;
                 break;
             }
-                this.deleteSelfLeft(boardmap,0,0);
+            this.deleteCoordinates(boardmap);
                 break;
         }
 
-
-        // if(this.col >0){
-        //     if(!this.checkLeftUp(boardmap,0)){
-        //         console.log("Can do!");
-        //         console.log("this.row:"+this.row+" this.col:"+this.col)
-        //    // this.deleteSelf(boardmap,0);
-        //     //this.col = --this.col;
-        //     this.deleteSelf(boardmap,0);
-        //     this.col = --this.col;
-        //     this.isSlide = true;
-        //    // this.draw(boardmap,left);
-        //     break;
-        //     }
-        // }else{
-        //     console.log("Just calling delete self!")
-        //     this.deleteSelf(boardmap,0);
-        //     break;
-        // }
   
     }
     rightPress(boardmap:Piece[][],left:number){
@@ -227,37 +176,36 @@ export class XPiece implements IPlayer{// this is the real t piece
             case 1:
                 if(this.col <7){
                     if(!this.checkRightUp(boardmap,0)){
-                        this.deleteSelf(boardmap,0);
+                        this.deleteCoordinates(boardmap);
                         this.col = ++this.col;
-                        this.isSlide = true;
                         break;
                     }
                 }
-                this.deleteSelf(boardmap,0);
+                this.deleteCoordinates(boardmap);
                 break;
             case 2:
             if(this.col <7){
-                this.deleteSelfRight(boardmap,0);
+                this.deleteCoordinates(boardmap);
                 this.col = ++this.col;
                 break;
             }
-            this.deleteSelfRight(boardmap,0);
+            this.deleteCoordinates(boardmap);
                 break;
             case 3:
             if(this.col <7){
-                this.deleteSelfFlipped(boardmap,0);
+                this.deleteCoordinates(boardmap);
                 this.col = ++this.col;
                 break;
             }
-                this.deleteSelfFlipped(boardmap,0);
+            this.deleteCoordinates(boardmap);
                 break;
             case 4:
             if(this.col <8){
-                this.deleteSelfLeft(boardmap,0,0);
+                this.deleteCoordinates(boardmap);
                 this.col = ++this.col;
                 break;
             }
-                this.deleteSelfLeft(boardmap,0,0);
+            this.deleteCoordinates(boardmap);
                 break;
         }
     }
@@ -267,24 +215,24 @@ export class XPiece implements IPlayer{// this is the real t piece
             case 1://up
                 //transform to right
                 
-                this.deleteSelf(boardmap,0);
+                this.deleteCoordinates(boardmap);
                 if(this.col <8){
                     this.state = 2;
                 }
                 break;
             case 2: //right
-                this.deleteSelfRight(boardmap,0);
+            this.deleteCoordinates(boardmap);
               
                 if(this.col > -1){
                 this.state = 3;
                 }
                 break;
             case 3://down
-                this.deleteSelfFlipped(boardmap,0);
+            this.deleteCoordinates(boardmap);
                 this.state = 4;
                 break;
             case 4://left
-                this.deleteSelfLeft(boardmap,0,0);
+            this.deleteCoordinates(boardmap);
                 if(this.col <8){
                     this.state = 1;
                 }
@@ -296,7 +244,7 @@ export class XPiece implements IPlayer{// this is the real t piece
             case 1:
                 if(this.row <18){
                     if(!this.checkBelowup(boardmap,1)){
-                        this.deleteSelf(boardmap,0);
+                        this.deleteCoordinates(boardmap);
                         ++this.row;
                     }
                    
@@ -305,7 +253,7 @@ export class XPiece implements IPlayer{// this is the real t piece
             case 2:
             if(this.row <17){
                 if(!this.checkBelowRight(boardmap,1)){
-                this.deleteSelfRight(boardmap,0);
+                    this.deleteCoordinates(boardmap);
                 ++this.row;
                 }
                 //this.deleteSelfRight(boardmap,0);
@@ -315,7 +263,7 @@ export class XPiece implements IPlayer{// this is the real t piece
             case 3:
             if(this.row <17){
                 if(!this.checkBelowDown(boardmap,1)){
-                this.deleteSelfFlipped(boardmap,0);
+                    this.deleteCoordinates(boardmap);
                 ++this.row;
                 }
             }
@@ -323,7 +271,7 @@ export class XPiece implements IPlayer{// this is the real t piece
             case 4:
             if(this.row <17){
                 if(!this.checkBelowLeft(boardmap,1)){
-                    this.deleteSelfLeft(boardmap,0,0);
+                    this.deleteCoordinates(boardmap);
                     ++this.row;
                 }
                 //this.deleteSelfLeft(boardmap,0,0);
@@ -436,12 +384,10 @@ export class XPiece implements IPlayer{// this is the real t piece
 
                 if(this.row > 0)
                 {
-                    if(!this.isSlide){
-                    this.deleteSelf(boardmap,1);
                     
-                    }else{
-                        this.isSlide = !this.isSlide;
-                    }
+                        this.deleteCoordinates(boardmap);
+                    
+                    
                 }
                 this.drawSelf(boardmap);
                 break;
@@ -461,8 +407,7 @@ export class XPiece implements IPlayer{// this is the real t piece
                     return true;
                 }
                 if(this.row > 0){
-                    this.deleteSelfRight(boardmap,1);
-                }
+                    this.deleteCoordinates(boardmap);                }
                 this.drawSelfRight(boardmap);
                 break;
             case 4:
@@ -482,8 +427,7 @@ export class XPiece implements IPlayer{// this is the real t piece
                 }
 
                 if(this.row > 0){
-                    this.deleteSelfLeft(boardmap,1,0);
-                }
+                    this.deleteCoordinates(boardmap);                }
                 this.drawSelfLeft(boardmap);
             break;
             case 3:
@@ -499,8 +443,7 @@ export class XPiece implements IPlayer{// this is the real t piece
                 }
                 if(this.row > 0){
                   
-                    this.deleteSelfFlipped(boardmap,1);
-                }
+                    this.deleteCoordinates(boardmap);                }
                 this.drawSelfFlipped(boardmap);
                 break;
            
