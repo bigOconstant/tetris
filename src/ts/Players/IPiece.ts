@@ -13,7 +13,7 @@ export class IPiece implements IPlayer{
     row:number;
     col:number;
     originalColor:string = "rgb(66, 66, 66)";
-    color:string;
+    color:string;z
     decr(){
         this.row = this.row + 1;
     }

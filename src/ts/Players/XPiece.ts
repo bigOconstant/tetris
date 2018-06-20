@@ -1,14 +1,15 @@
 import {IPlayer} from './IPlayer';
 import {Piece} from '../Piece/Piece';
+import {Coordinate} from './Coordinate';
 
-export class coordinate{
-    row:number;
-    col:number;
-    constructor(r:number,c:number){
-        this.row = r;
-        this.col = c;
-    }
-}
+// export class coordinate{
+//     row:number;
+//     col:number;
+//     constructor(r:number,c:number){
+//         this.row = r;
+//         this.col = c;
+//     }
+// }
 export class XPiece implements IPlayer{// this is the real t piece
 
     done:boolean;
@@ -18,7 +19,7 @@ export class XPiece implements IPlayer{// this is the real t piece
     col:number;
     originalColor:string = "rgb(66, 66, 66)";
     color:string;
-    coordinates:coordinate[];
+    coordinates:Coordinate[];
     
 
     constructor(){
@@ -44,7 +45,7 @@ export class XPiece implements IPlayer{// this is the real t piece
         if(boardmap[x] && boardmap[x][y]){
         boardmap[x][y].color = this.color;
         boardmap[x][y].empty = false;
-        this.coordinates.push(new coordinate(x,y));
+        this.coordinates.push(new Coordinate(x,y));
         }else{
             console.log("Trying to draw something that doesn't exists at boardmap["+x+"]["+y+"]");
         }
@@ -121,14 +122,9 @@ export class XPiece implements IPlayer{// this is the real t piece
             case 1:
                 if(this.col >0){
                     if(!this.checkLeftUp(boardmap,0)){
-                        console.log("Can do!");
-                        console.log("this.row:"+this.row+" this.col:"+this.col)
-                   // this.deleteSelf(boardmap,0);
-                    //this.col = --this.col;
-                    //this.deleteSelf(boardmap,0);
+                        
                     this.deleteCoordinates(boardmap);
                     this.col = --this.col;
-                   // this.draw(boardmap,left);
                     break;
                     }
                 }else{
@@ -136,9 +132,7 @@ export class XPiece implements IPlayer{// this is the real t piece
                     this.deleteCoordinates(boardmap);
                     break;
                 }
-                //this.draw(boardmap,left);
                 this.deleteCoordinates(boardmap);
-                //this.draw(boardmap,0);
                 break;
             case 2:
             if(this.col >-1){
@@ -271,7 +265,7 @@ export class XPiece implements IPlayer{// this is the real t piece
                     this.deleteCoordinates(boardmap);
                 ++this.row;
                 }
-                //this.deleteSelfRight(boardmap,0);
+
                 break;
             }
                 break;
@@ -289,7 +283,6 @@ export class XPiece implements IPlayer{// this is the real t piece
                     this.deleteCoordinates(boardmap);
                     ++this.row;
                 }
-                //this.deleteSelfLeft(boardmap,0,0);
                break;
             }
                 break;
@@ -299,7 +292,6 @@ export class XPiece implements IPlayer{// this is the real t piece
         var ToLeft = false;
       
         if(!boardmap[this.row+1][this.col-1].empty){
-            console.log("In checkLeftUpNotEmpty!")
             ToLeft = true;
         }
         if(!boardmap[this.row][this.col].empty){
@@ -321,13 +313,13 @@ export class XPiece implements IPlayer{// this is the real t piece
     }
 
     checkRightRight(boardmap:Piece[][],modifier:number){
-        var toRight = false;
         // 3 possible points of contact
          /*
         [^] <-  this.row, this.col + 2
         [<][>] <-  this.row+1 , this.col +3
         [v] <-  this.row+2, this.col +2
         */
+        var toRight = false;
         if(!boardmap[this.row][this.col+2].empty){
             toRight = true;
         }
@@ -491,7 +483,7 @@ export class XPiece implements IPlayer{// this is the real t piece
                 if(this.row>18){
                     this.done = true;
                     return true;
-                    break;
+                   
                 }
                 if(this.checkBelowup(boardmap,0)){
                     this.done = true;
@@ -499,7 +491,7 @@ export class XPiece implements IPlayer{// this is the real t piece
                         return false;
                     }
                     return true;
-                    break;
+                    
                 }
 
 
@@ -516,7 +508,7 @@ export class XPiece implements IPlayer{// this is the real t piece
                 if(this.row>17){
                     this.done = true;
                     return true;
-                    break;
+  
                 }
                 if(this.row <17 && this.checkBelowRight(boardmap,0)){
                     this.done = true;
@@ -534,7 +526,6 @@ export class XPiece implements IPlayer{// this is the real t piece
                 if(this.row>17){
                     this.done = true;
                     return true;
-                    break;
                 }
                 if(this.row <17 && this.checkBelowLeft(boardmap,0)){
                     this.done = true;
@@ -554,7 +545,6 @@ export class XPiece implements IPlayer{// this is the real t piece
                 if(this.row>17){
                     this.done = true;
                     return true;
-                    break;
                 }
                 if(this.checkBelowDown(boardmap,0)){
                     this.done = true;
@@ -564,7 +554,7 @@ export class XPiece implements IPlayer{// this is the real t piece
                 if(this.row > 0){
                   
                     this.deleteCoordinates(boardmap);                }
-                this.drawSelfFlipped(boardmap);
+                    this.drawSelfFlipped(boardmap);
                 break;
            
         }
