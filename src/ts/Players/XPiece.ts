@@ -10,10 +10,12 @@ export class XPiece implements IPlayer{// this is the real t piece
     col:number;
     originalColor:string = "rgb(66, 66, 66)";
     color:string;
+    isSlide:boolean;
 
     constructor(){
         this.flipped = Math.random() < 0.5;
         this.setcolor();
+        this.isSlide = false;
         this.done = false;
         this.col = Math.floor((Math.random() * 6) + 2);
         this.state = 1;//Math.floor((Math.random()*4) +1);
@@ -28,12 +30,22 @@ export class XPiece implements IPlayer{// this is the real t piece
         }
     }
     drawToPoint(boardmap:Piece[][],x:number,y:number){
+
+        
+        if(boardmap[x] && boardmap[x][y]){
         boardmap[x][y].color = this.color;
         boardmap[x][y].empty = false;
+        }else{
+            console.log("Trying to draw something that doesn't exists at boardmap["+x+"]["+y+"]");
+        }
     }
     deleteToPoint(boardmap:Piece[][],x:number,y:number){
-        boardmap[x][y].color = this.originalColor;
-        boardmap[x][y].empty = true;
+        if(boardmap[x] && boardmap[x][y]){
+           boardmap[x][y].color = this.originalColor;
+           boardmap[x][y].empty = true;
+        }else{
+            console.log("Trying to delete something that doesn't exists at boardmap["+x+"]["+y+"]");
+        }
     }
 
     drawSelf(boardmap:Piece[][]){
@@ -130,62 +142,122 @@ export class XPiece implements IPlayer{// this is the real t piece
        this.deleteToPoint(boardmap,this.row+2 - xmodifier,this.col+1 - ymodifier)
     }
 
+    // case 1:
+    //             if(this.col <7){
+    //                 this.deleteSelf(boardmap,0);
+    //                 this.col = ++this.col;
+    //                 this.isSlide = true;
+    //                 break;
+    //             }
+    //             this.deleteSelf(boardmap,0);
+    //             break;
+   
     leftPress(boardmap:Piece[][],left:number){
         switch(this.state){
             case 1:
                 if(this.col >0){
+                    if(!this.checkLeftUp(boardmap,0)){
+                        console.log("Can do!");
+                        console.log("this.row:"+this.row+" this.col:"+this.col)
+                   // this.deleteSelf(boardmap,0);
+                    //this.col = --this.col;
                     this.deleteSelf(boardmap,0);
                     this.col = --this.col;
+                    this.isSlide = true;
+                   // this.draw(boardmap,left);
+                    break;
+                    }
+                }else{
+                    console.log("Just calling delete self!")
+                    this.deleteSelf(boardmap,0);
+                    break;
                 }
+                //this.draw(boardmap,left);
+                this.deleteSelf(boardmap,0);
+                //this.draw(boardmap,0);
                 break;
             case 2:
             if(this.col >-1){
                 this.deleteSelfRight(boardmap,0);
                 this.col = --this.col;
+                break;
             }
+            this.deleteSelfRight(boardmap,0);
                 break;
             case 3:
             if(this.col >0){
                 this.deleteSelfFlipped(boardmap,0);
                 this.col = --this.col;
+                break;
             }
+            this.deleteSelfFlipped(boardmap,0);
                 break;
             case 4:
             if(this.col >0){
                 this.deleteSelfLeft(boardmap,0,0);
                 this.col = --this.col;
+                break;
             }
+                this.deleteSelfLeft(boardmap,0,0);
                 break;
         }
-      //  this.deleteSelfLeft(boardmap,0,0);
-        //this.col = --this.col;
+
+
+        // if(this.col >0){
+        //     if(!this.checkLeftUp(boardmap,0)){
+        //         console.log("Can do!");
+        //         console.log("this.row:"+this.row+" this.col:"+this.col)
+        //    // this.deleteSelf(boardmap,0);
+        //     //this.col = --this.col;
+        //     this.deleteSelf(boardmap,0);
+        //     this.col = --this.col;
+        //     this.isSlide = true;
+        //    // this.draw(boardmap,left);
+        //     break;
+        //     }
+        // }else{
+        //     console.log("Just calling delete self!")
+        //     this.deleteSelf(boardmap,0);
+        //     break;
+        // }
   
     }
     rightPress(boardmap:Piece[][],left:number){
         switch(this.state){
             case 1:
                 if(this.col <7){
-                    this.deleteSelf(boardmap,0);
-                    this.col = ++this.col;
+                    if(!this.checkRightUp(boardmap,0)){
+                        this.deleteSelf(boardmap,0);
+                        this.col = ++this.col;
+                        this.isSlide = true;
+                        break;
+                    }
                 }
+                this.deleteSelf(boardmap,0);
                 break;
             case 2:
             if(this.col <7){
                 this.deleteSelfRight(boardmap,0);
                 this.col = ++this.col;
+                break;
             }
+            this.deleteSelfRight(boardmap,0);
                 break;
             case 3:
             if(this.col <7){
                 this.deleteSelfFlipped(boardmap,0);
                 this.col = ++this.col;
+                break;
             }
+                this.deleteSelfFlipped(boardmap,0);
                 break;
             case 4:
             if(this.col <8){
                 this.deleteSelfLeft(boardmap,0,0);
                 this.col = ++this.col;
+                break;
             }
+                this.deleteSelfLeft(boardmap,0,0);
                 break;
         }
     }
@@ -223,43 +295,123 @@ export class XPiece implements IPlayer{// this is the real t piece
         switch(this.state){
             case 1:
                 if(this.row <18){
-                    this.deleteSelf(boardmap,0);
-                    ++this.row;
+                    if(!this.checkBelowup(boardmap,1)){
+                        this.deleteSelf(boardmap,0);
+                        ++this.row;
+                    }
                    
                 }
                 break;
             case 2:
             if(this.row <17){
+                if(!this.checkBelowRight(boardmap,1)){
                 this.deleteSelfRight(boardmap,0);
                 ++this.row;
+                }
+                //this.deleteSelfRight(boardmap,0);
+                break;
             }
                 break;
             case 3:
             if(this.row <17){
+                if(!this.checkBelowDown(boardmap,1)){
                 this.deleteSelfFlipped(boardmap,0);
                 ++this.row;
+                }
             }
                 break;
             case 4:
             if(this.row <17){
-                this.deleteSelfLeft(boardmap,0,0);
-                ++this.row;
+                if(!this.checkBelowLeft(boardmap,1)){
+                    this.deleteSelfLeft(boardmap,0,0);
+                    ++this.row;
+                }
+                //this.deleteSelfLeft(boardmap,0,0);
+               break;
             }
                 break;
         }
     }
-    checkBelowup(boardmap:Piece[][]){
+    checkLeftUp(boardmap:Piece[][],modifier:number){
+        var ToLeft = false;
+      
+        if(!boardmap[this.row+1][this.col-1].empty){
+            console.log("In checkLeftUpNotEmpty!")
+            ToLeft = true;
+        }
+        if(!boardmap[this.row][this.col].empty){
+            ToLeft = true;
+        }
+        
+        return ToLeft;
+    }
+    checkRightUp(boardmap:Piece[][],modifier:number){
+        var toRight = false;
+
+        if(!boardmap[this.row+1][this.col+3].empty){
+            toRight = true;
+        }
+        if(!boardmap[this.row][this.col+2].empty){
+            toRight = true;
+        }
+        return toRight;
+    }
+
+    checkBelowup(boardmap:Piece[][],modifier:number){
         var below = false;
-        if(!boardmap[this.row+1][this.col].empty){
+        if(!boardmap[this.row+1+modifier][this.col].empty){
             below = true;
         }
-        if(!boardmap[this.row+1][this.col+1].empty){
+        if(!boardmap[this.row+1+modifier][this.col+1].empty){
             below = true;
         }
-        if(!boardmap[this.row+1][this.col+2].empty){
+        if(!boardmap[this.row+1+modifier][this.col+2].empty){
             below = true;
         }
-        console.log("below ="+below);
+        //console.log("below ="+below);
+        return below;
+    }
+    checkBelowDown(boardmap:Piece[][],modifier:number){
+        var below = false;
+        if(!boardmap[this.row+1+modifier][this.col].empty){
+            below = true;
+        }
+        if(!boardmap[this.row+2+modifier][this.col+1].empty){
+            below = true;
+        }
+        if(!boardmap[this.row+1+modifier][this.col+2].empty){
+            below = true;
+        }
+        return below;
+
+    }
+    checkBelowLeft(boardmap:Piece[][],modifier:number){
+        var below = false;
+
+        if(!boardmap[this.row+2+modifier][this.col+1].empty){
+            below = true;  
+        }
+        if(!boardmap[this.row+1+modifier][this.col].empty){
+            below = true;  
+        }
+        // if(!boardmap[this.row+3+modifier][this.col+1].empty){
+        //     below = true;
+        // }
+        return below;
+    }
+    checkBelowRight(boardmap:Piece[][],modifier:number){
+        var below = false;
+
+      
+        if(!boardmap[this.row+2+modifier][this.col+1].empty){
+            below = true;  
+        }
+        if(!boardmap[this.row+1+modifier][this.col+2].empty){
+            below = true;  
+        }
+        // if(!boardmap[this.row+3+modifier][this.col+1].empty){
+        //     below = true;
+        // }
         return below;
     }
 
@@ -272,15 +424,24 @@ export class XPiece implements IPlayer{// this is the real t piece
                     return true;
                     break;
                 }
-                if(this.checkBelowup(boardmap)){
+                if(this.checkBelowup(boardmap,0)){
                     this.done = true;
+                    if(this.row === 0){
+                        return false;
+                    }
                     return true;
                     break;
                 }
 
 
-                if(this.row > 0){
+                if(this.row > 0)
+                {
+                    if(!this.isSlide){
                     this.deleteSelf(boardmap,1);
+                    
+                    }else{
+                        this.isSlide = !this.isSlide;
+                    }
                 }
                 this.drawSelf(boardmap);
                 break;
@@ -291,21 +452,18 @@ export class XPiece implements IPlayer{// this is the real t piece
                     return true;
                     break;
                 }
+                if(this.row <17 && this.checkBelowRight(boardmap,0)){
+                    this.done = true;
+                    return true;
+                }
+                if(this.checkBelowRight(boardmap,0)){
+                    this.done = true;
+                    return true;
+                }
                 if(this.row > 0){
                     this.deleteSelfRight(boardmap,1);
                 }
                 this.drawSelfRight(boardmap);
-                break;
-            case 3:
-                if(this.row>17){
-                    this.done = true;
-                    return true;
-                    break;
-                }
-                if(this.row > 0){
-                    this.deleteSelfFlipped(boardmap,1);
-                }
-                this.drawSelfFlipped(boardmap);
                 break;
             case 4:
                 if(this.row>17){
@@ -313,12 +471,39 @@ export class XPiece implements IPlayer{// this is the real t piece
                     return true;
                     break;
                 }
+                if(this.row <17 && this.checkBelowLeft(boardmap,0)){
+                    this.done = true;
+                    return true;
+                }
+                if(this.checkBelowLeft(boardmap,0)){
+                    this.done = true;
+                    return true;
+
+                }
 
                 if(this.row > 0){
                     this.deleteSelfLeft(boardmap,1,0);
                 }
                 this.drawSelfLeft(boardmap);
             break;
+            case 3:
+                if(this.row>17){
+                    this.done = true;
+                    return true;
+                    break;
+                }
+                if(this.checkBelowDown(boardmap,0)){
+                    this.done = true;
+                   // this.deleteSelfFlipped(boardmap,1);
+                    return true;
+                }
+                if(this.row > 0){
+                  
+                    this.deleteSelfFlipped(boardmap,1);
+                }
+                this.drawSelfFlipped(boardmap);
+                break;
+           
         }
 
         return true;
