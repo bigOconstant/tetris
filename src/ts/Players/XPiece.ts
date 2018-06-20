@@ -58,9 +58,10 @@ export class XPiece implements IPlayer{// this is the real t piece
         }
     }
     deleteCoordinates(boardmap){
-        this.coordinates.forEach(element => {
-            this.deleteToPoint(boardmap,element.row,element.col);
-        });
+        while (this.coordinates.length >0){
+            var current = this.coordinates.pop();
+            this.deleteToPoint(boardmap,current.row,current.col);
+        }
     }
 
     drawSelf(boardmap:Piece[][]){
@@ -102,8 +103,6 @@ export class XPiece implements IPlayer{// this is the real t piece
 
     }
 
-
-
     drawSelfLeft(boardmap:Piece[][]){
         /*
         [^]
@@ -116,8 +115,6 @@ export class XPiece implements IPlayer{// this is the real t piece
        this.drawToPoint(boardmap,this.row+2,this.col+1)
 
     }
-
-
 
     leftPress(boardmap:Piece[][],left:number){
         switch(this.state){
@@ -145,24 +142,35 @@ export class XPiece implements IPlayer{// this is the real t piece
                 break;
             case 2:
             if(this.col >-1){
+                if(!this.checkLeftRight(boardmap,0)){
                 this.deleteCoordinates(boardmap);
                 this.col = --this.col;
                 break;
+                }
             }
             this.deleteCoordinates(boardmap);
                 break;
             case 3:
             if(this.col >0){
+                if(!this.checkLeftDown(boardmap,0)){
                 this.deleteCoordinates(boardmap);
                 this.col = --this.col;
+                break;
+                }
+                this.deleteCoordinates(boardmap);
                 break;
             }
             this.deleteCoordinates(boardmap);
                 break;
             case 4:
             if(this.col >0){
+                console.log("Pressing left as left!");
+                if(!this.checkLeftLeft(boardmap,0)){
                 this.deleteCoordinates(boardmap);
                 this.col = --this.col;
+                break;
+                }
+                this.deleteCoordinates(boardmap);
                 break;
             }
             this.deleteCoordinates(boardmap);
@@ -185,25 +193,32 @@ export class XPiece implements IPlayer{// this is the real t piece
                 break;
             case 2:
             if(this.col <7){
+                if(!this.checkRightRight(boardmap,0)){
                 this.deleteCoordinates(boardmap);
                 this.col = ++this.col;
                 break;
+                }
             }
             this.deleteCoordinates(boardmap);
                 break;
             case 3:
             if(this.col <7){
+                if(!this.checkRightDown(boardmap,0)){
+                
                 this.deleteCoordinates(boardmap);
                 this.col = ++this.col;
                 break;
+                }
             }
             this.deleteCoordinates(boardmap);
                 break;
             case 4:
             if(this.col <8){
+                if(!this.checkRightLeft(boardmap,0)){
                 this.deleteCoordinates(boardmap);
                 this.col = ++this.col;
                 break;
+                }
             }
             this.deleteCoordinates(boardmap);
                 break;
@@ -305,6 +320,112 @@ export class XPiece implements IPlayer{// this is the real t piece
         return toRight;
     }
 
+    checkRightRight(boardmap:Piece[][],modifier:number){
+        var toRight = false;
+        // 3 possible points of contact
+         /*
+        [^] <-  this.row, this.col + 2
+        [<][>] <-  this.row+1 , this.col +3
+        [v] <-  this.row+2, this.col +2
+        */
+        if(!boardmap[this.row][this.col+2].empty){
+            toRight = true;
+        }
+        if(!boardmap[this.row +1][this.col+3].empty){
+            toRight = true;
+        }
+        if(!boardmap[this.row + 2][this.col+2].empty){
+            toRight = true;
+        }
+        return toRight;
+    }
+    checkLeftRight(boardmap:Piece[][],modifier:number){
+        var toRight = false;
+        // 3 possible points of contact
+         /*
+       this.row, this.col -> [^] 
+       this.row+1,this.col-> [<][>] 
+       this.row+2,this.col-> [v]
+        */
+        if(!boardmap[this.row][this.col].empty){
+            toRight = true;
+        }
+        if(!boardmap[this.row +1][this.col].empty){
+            toRight = true;
+        }
+        if(!boardmap[this.row + 2][this.col].empty){
+            toRight = true;
+        }
+        return toRight;
+    }
+    checkRightLeft(boardmap:Piece[][],modifier:number){
+         /*
+        [^] -> this.row, this.col+2
+     [<][>] -> this.row+1, this.col+2
+        [v] -> this.row+2, this.col+2
+        */
+       var toRight = false;
+       if(!boardmap[this.row][this.col+2].empty){
+           toRight = true;
+       }
+       if(!boardmap[this.row+1][this.col+2]){
+           toRight = true;
+       }
+       if(!boardmap[this.row+2][this.col+2]){
+           toRight = true;
+       }
+       return toRight;
+    }
+    checkLeftLeft(boardmap:Piece[][],modifier:number){
+         /*
+      this.row,this.col->     [^]  
+     this.row+1,this.col -1[<][>]  
+      this.row+2,this.col     [v] 
+        */
+       var toLeft = false;
+       if(!boardmap[this.row][this.col].empty){
+           toLeft = true;
+       }
+       if(!boardmap[this.row+1][this.col-1].empty){
+           toLeft = true;
+       }
+       if(!boardmap[this.row+2][this.col].empty){
+           toLeft = true;
+       }
+       return toLeft;
+    }
+
+    checkLeftDown(boardmap:Piece[][],modifier:number){
+    /*
+        Two Points of Entry
+       this.row+1,this.col-1 [<][^][>]
+       this.row+2,this.col      [v]
+    */
+        var toLeft = false;
+        if(!boardmap[this.row+1][this.col-1].empty){
+            toLeft = true;
+        }
+        if(!boardmap[this.row+2][this.col].empty){
+            toLeft = true;
+        }
+        return toLeft;
+    }
+    checkRightDown(boardmap:Piece[][],modifier:number){
+       /*
+        Two Points of Entry
+         [<][^][>] -> this.row+1, this.col+3
+            [v]  -> this.row+2, this.col+2
+        */
+       var toRight = false;
+       if(!boardmap[this.row+1][this.col+3].empty){
+           toRight = true;
+       }
+       if(!boardmap[this.row+2][this.col+2].empty){
+           toRight = true;
+       }
+       return toRight;
+    }
+
     checkBelowup(boardmap:Piece[][],modifier:number){
         var below = false;
         if(!boardmap[this.row+1+modifier][this.col].empty){
@@ -392,7 +513,6 @@ export class XPiece implements IPlayer{// this is the real t piece
                 this.drawSelf(boardmap);
                 break;
             case 2:
-                console.log("Drawing right");
                 if(this.row>17){
                     this.done = true;
                     return true;
