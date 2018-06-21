@@ -3,7 +3,8 @@ import {Piece} from '../Piece/Piece';
 import {Coordinate} from './Coordinate';
 export class IPiece implements IPlayer{
     constructor(){
-        this.flipped = Math.random() < 0.5;
+        this.flipped = false;//Math.random() < 0.5;
+        this.coordinates = [];
         this.setcolor();
         this.done = false;
         this.col = Math.floor((Math.random() * 6) + 0);
@@ -18,6 +19,31 @@ export class IPiece implements IPlayer{
     coordinates:Coordinate[];
     decr(){
         this.row = this.row + 1;
+    }
+    drawToPoint(boardmap:Piece[][],Cord:Coordinate){
+
+        
+        if(boardmap[Cord.row] && boardmap[Cord.row][Cord.col]){
+        boardmap[Cord.row][Cord.col].color = this.color;
+        boardmap[Cord.row][Cord.col].empty = false;
+        this.coordinates.push(new Coordinate(Cord.row,Cord.col));
+        }else{
+            console.log("Trying to draw something that doesn't exists at boardmap["+Cord.row+"]["+Cord.col+"]");
+        }
+    }
+    deleteToPoint(boardmap:Piece[][],x:number,y:number){
+        if(boardmap[x] && boardmap[x][y]){
+           boardmap[x][y].color = this.originalColor;
+           boardmap[x][y].empty = true;
+        }else{
+            console.log("Trying to delete something that doesn't exists at boardmap["+x+"]["+y+"]");
+        }
+    }
+    deleteCoordinates(boardmap){
+        while (this.coordinates.length >0){
+            var current = this.coordinates.pop();
+            this.deleteToPoint(boardmap,current.row,current.col);
+        }
     }
     setcolor(){
         var color = Math.floor((Math.random() * 6) + 1);
@@ -47,277 +73,354 @@ export class IPiece implements IPlayer{
          }
      }
     leftPress(boardmap:Piece[][],left:number){
-        if(this.flipped){//Delete all elements to right
-            for(var i = 0; i < 4; i++){
-                boardmap[this.row +i ][this.col].color = this.originalColor;
-                boardmap[this.row + i  ][this.col].empty = true;
+        if(this.flipped){
+            if(this.col >= -1){
+                if(!this.checkLeftVertical(boardmap)){
+                this.deleteCoordinates(boardmap);
+                --this.col;
+                }else{this.deleteCoordinates(boardmap);}
             }
-            var noabstruction = true;
-            if(this.col >0){
-                for(var i = 0; i < 4; ++i){
-                    if(boardmap[this.row +i][this.col -1].empty == false){
-                        noabstruction = false;
-                    }
+            this.deleteCoordinates(boardmap);
+            //this.drawVertical(boardmap,left);
+        }else{
+            if(this.col >= 0){
+                if(!this.checkLeftHorizontal(boardmap)){
+                this.deleteCoordinates(boardmap);
+                --this.col;
                 }
             }
-            if(this.col >0 && noabstruction){
-                --this.col; 
-            }
-         }else{
-            for(var i = 0; i < 4; i++){
-                boardmap[this.row ][this.col+i].color =   this.originalColor;
-                boardmap[this.row ][this.col +i].empty = true;
-            }
-            if(this.col >0 && boardmap[this.row][this.col-1].empty){
-                --this.col; 
-            }
-         }
-        //  if(this.col >0 ){
-        //      --this.col; 
-        //  }
+            this.deleteCoordinates(boardmap);
+            //this.drawHorizontal(boardmap,left);
+        }
     }
     rightPress(boardmap:Piece[][],left:number){
-        //console.log("This.flipped = "+this.flipped);
-        if(this.flipped){
-            //Delete all elements to right
-            if(this.col < 9){
-            for(var i = 0; i < 4; i++){
-                boardmap[this.row +i ][this.col].color = this.originalColor;
-                boardmap[this.row + i  ][this.col].empty = true;
+                 /*
+        [ ][*][ ][ ]     [ ][ ][ ][ ]
+        [ ][*][ ][ ]     [*][*][*][*]
+        [ ][*][ ][ ]     [ ][ ][ ][ ]
+        [ ][*][ ][ ]     [ ][ ][ ][ ]
+
+        */
+       if(this.flipped){
+        if(this.col < 11){
+            if(!this.checkRightVertical(boardmap)){
+                this.deleteCoordinates(boardmap);
+                ++this.col;
+            }else{
+                this.deleteCoordinates(boardmap);
             }
-            var noabstruction = true;
-            if(this.col <9){
-                for(var i = 0; i < 4; ++i){
-                    if(boardmap[this.row +i][this.col +1].empty == false){
-                        noabstruction = false;
-                    }
-                }
-                if(this.col <9 && noabstruction){
-                    ++this.col;; 
-                }}
-            //++this.col;
-         }
-         }else{
-             
-             if(this.col < 6){
-            for(var i = 0; i < 4; i++){
-                boardmap[this.row ][this.col+i].color =   this.originalColor;
-                boardmap[this.row ][this.col +i].empty = true;
-            }
-            if(this.col < 6 && boardmap[this.row ][this.col +4].empty ){
+            
+        }else{
+            this.deleteCoordinates(boardmap);
+        }
+       }else{
+        if(this.col <6){
+            if(!this.checkRightHorizontal(boardmap)){
+            this.deleteCoordinates(boardmap);
             ++this.col;
+            }else{
+                this.deleteCoordinates(boardmap);
             }
-         }
-         }
+        }else{
+            this.deleteCoordinates(boardmap);
+        }
+       }
     }
     upPress(boardmap:Piece[][],left:number){
-        if(this.flipped){
-           // this.flipped = !this.flipped;
-            //console.log("Change!");
-            //Check if there is room on left
-            if(this.col >0 &&  this.col < 8 && this.row < 17){
-             //  console.log("Fir check pass!")
-                //In range where it's possible now check for obstructions
-                if(boardmap[this.row][this.col-1].empty){
-                    if(boardmap[this.row][this.col+1].empty && boardmap[this.row][this.col+2].empty){
-                      //  console.log("We can transform");
-                        for(var i = 0; i <4 ; ++i){
 
-                           
-                          //  console.log(boardmap[this.row+i][this.col]);
-                            boardmap[this.row+i][this.col].color = this.originalColor;
-                            boardmap[this.row+i][this.col].empty = true;
-                            // return this.flipped;
-                            
-                        }
-                        this.flipped = !this.flipped;
-                        
-                          // return this.flipped;
-                    }
-                }else{
-                   // return this.flipped;
-                }
-            }else{
-               // return this.flipped;
-            }
-            //Check if there is room on right
-        }
-        else{//horizontal
-            //console.log("Checking if we can rotate horizontal");
-            var canChange  =true;
-           // console.log("This row:"+this.row);
-            for(var i = 0; i < 4; ++i){
-                boardmap[this.row][this.col+i].color = this.originalColor;
-                boardmap[this.row][this.col+i].empty = true;
-            }
-            if(this.row >15){
-                canChange = false;
-            }
-            for(var i = 0; i < 4; ++i){
-                //console.log(boardmap[this.row+i][this.col].empty);
-                if(!boardmap[this.row+i][this.col].empty){
-                    canChange = false;
-                }    
-            }
-            if(canChange){
-              //  console.log("Horizontal can change!");
+         /*
+        [ ][*][ ][ ]     [ ][ ][ ][ ]
+        [ ][*][ ][ ] ->  [*][*][*][*]
+        [ ][*][ ][ ]     [ ][ ][ ][ ]
+        [ ][*][ ][ ]     [ ][ ][ ][ ]
+
+        */
+        if(this.flipped){
+            //console.log("Not implemented")
+            if(!this.checkVerticalToHorizontal(boardmap)){
+                this.deleteCoordinates(boardmap);
                 this.flipped = !this.flipped;
-                for(var i = 0; i < 4; ++i){
-                    boardmap[this.row][this.col+i].color = this.originalColor;
-                    boardmap[this.row][this.col+i].empty = true;
-                }
-                for(var i = 0; i < 4; ++i){
-                    boardmap[this.row+i][this.col].color = this.originalColor;
-                    boardmap[this.row+i][this.col].empty = true;
-                }
+            }else{
+                this.deleteCoordinates(boardmap);
             }
+        }
+          /*
+        [ ][ ][ ][ ]    [ ][*][ ][ ]
+        [*][*][*][*] -> [ ][*][ ][ ]
+        [ ][ ][ ][ ]    [ ][*][ ][ ]
+        [ ][ ][ ][ ]    [ ][*][ ][ ]
+        */
+        else{//horizontal
+          if(!this.checkHorizontalToVertical(boardmap)){
+              this.deleteCoordinates(boardmap);
+              this.flipped = !this.flipped;
+          }else{
+              this.deleteCoordinates(boardmap);
+          }
            // return this.flipped;
          //   console.log("Change Again");
         }
 
     }
+    checkVerticalToHorizontal(boardmap){
+           /*
+        [ ][*][ ][ ]     [ ][ ][ ][ ]
+        [ ][*][ ][ ] ->  [*][*][*][*]
+        [ ][*][ ][ ]     [ ][ ][ ][ ]
+        [ ][*][ ][ ]     [ ][ ][ ][ ]
+
+        */
+       var notempty = false;
+       if(this.col >6){
+           return true;
+       }
+        if(this.col === -1){
+            return true;
+        }
+        if(!boardmap[this.row+1][this.col].empty){
+            return true;
+        }
+        if(!boardmap[this.row+1][this.col+2].empty){
+            return true;
+        }
+        if(!boardmap[this.row+1][this.col+3].empty){
+            return true;
+        }
+        return notempty;
+
+    }
+    checkHorizontalToVertical(boardmap){
+          /*
+        [ ][ ][ ][ ]    [ ][*][ ][ ]
+        [*][*][*][*] -> [ ][*][ ][ ]
+        [ ][ ][ ][ ]    [ ][*][ ][ ]
+        [ ][ ][ ][ ]    [ ][*][ ][ ]
+        */
+       var notempty = false;
+       if(this.row > 17){
+           return true;
+       }
+       if(!boardmap[this.row][this.col+1].empty){
+           return true;
+       }
+       if(!boardmap[this.row+2][this.col+1].empty){
+           return true;
+       }
+       if(!boardmap[this.row+3][this.col+1].empty){
+           return true;
+       }
+       return notempty;
+    }
+
     downPress(boardmap:Piece[][]){
         console.log("Not Implemented");
     }
     draw(boardmap:Piece[][],left:number){
         if(this.flipped){
-           return this.drawFlipped(boardmap,left);
+            var returnval = this.drawFlipped(boardmap,left);
+           return returnval;
         }else{
             return this.drawNotFlipped(boardmap,left);
         }
     }
 
-    drawVertical(){
-        //Do later
+    drawVertical(boardmap:Piece[][],left:number){
+       /*
+        [ ][*][ ][ ]
+        [ ][*][ ][ ]
+        [ ][*][ ][ ]
+        [ ][*][ ][ ]
+        this.row, this.col+1
+        this.row+1, this.col+1
+        this.row+2, this.col+1
+        this.row+3, this.col+1
+        */
+       this.drawToPoint(boardmap,new Coordinate(this.row,this.col+1));
+       this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col+1));
+       this.drawToPoint(boardmap,new Coordinate(this.row+2,this.col+1));
+       this.drawToPoint(boardmap,new Coordinate(this.row+3,this.col+1));
+
     }
+    drawHorizontal(boardmap:Piece[][],left:number){
+
+
+         /*
+        [ ][ ][ ][ ]
+        [*][*][*][*]
+        [ ][ ][ ][ ]
+        [ ][ ][ ][ ]
+        this.row+1, this.col
+        this.row+1, this.col+1
+        this.row+1, this.col+2
+        this.row+1, this.col+3
+        */
+       this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col));
+       this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col+1));
+       this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col+2));
+       this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col+3));
+
+    }
+    checkLeftVertical(boardmap:Piece[][]){
+          /*
+        [ ][*][ ][ ]
+        [ ][*][ ][ ]
+        [ ][*][ ][ ]
+        [ ][*][ ][ ]
+        */
+       var blocked = false;
+       if(this.col <0){
+           return true;
+       }
+       for(var i = this.row; i < this.row+4;++i){
+           if(!boardmap[i][this.col].empty){
+               blocked = true;
+           }
+       }
+       return blocked;
+    }
+    checkRightVertical(boardmap:Piece[][]){
+          /*
+        [ ][*][ ][ ]
+        [ ][*][ ][ ]
+        [ ][*][ ][ ]
+        [ ][*][ ][ ]
+        */
+       var blocked = false;
+       if(this.col > 7){
+           return true;
+       }
+       for(var i = this.row; i < this.row+4;++i){
+           if(!boardmap[i][this.col+2].empty){
+               blocked = true;
+           }
+       }
+       return blocked;
+
+    }
+    checkRightHorizontal(boardmap:Piece[][]){
+  /*
+        [ ][ ][ ][ ]
+        [*][*][*][*]
+        [ ][ ][ ][ ]
+        [ ][ ][ ][ ]
+        */
+       
+       return !boardmap[this.row+1][this.col+4].empty
+   
+
+    }
+    checkLeftHorizontal(boardmap:Piece[][]){
+          /*
+        [ ][ ][ ][ ]
+        [*][*][*][*]
+        [ ][ ][ ][ ]
+        [ ][ ][ ][ ]
+        */
+       if(this.col === 0){
+           return true;
+       }
+       return !boardmap[this.row+1][this.col-1].empty
+    }
+    checkBelowHorizontal(boardmap:Piece[][],modifier:number){
+                /*
+        [ ][ ][ ][ ]
+        [*][*][*][*]
+        [ ][ ][ ][ ]
+        [ ][ ][ ][ ]
+        */
+       var blocked = false;
+       if(this.row+2+modifier === 20){
+        //doesn't exist return
+        blocked = true;
+       }else{
+       for(var i = this.col; i < this.col+4;++i){
+           if(!boardmap[this.row+2+modifier][i].empty){
+               blocked = true;
+           }
+       }}
+       return blocked;
+    }
+
+    checkBelowVertical(boardmap:Piece[][]){
+                  /*
+        [ ][*][ ][ ]
+        [ ][*][ ][ ]
+        [ ][*][ ][ ]
+        [ ][*][ ][ ]
+        */
+       if(this.row+3 === 20){
+           return true;
+       }
+        return !boardmap[this.row+3][this.col+1].empty
+    }
+    
 
 
     drawFlipped(boardmap:Piece[][],left:number){//vertical
-        if(this.row === 0){
-               
-            for(var i = 0; i < 4; i++){
-                if(!boardmap[this.row+i][this.col].empty){
-                    for(var j = 0; j < i; ++j){
-                       boardmap[this.row + j  ][this.col].color = this.color;
-                       boardmap[this.row + j ][this.col].empty = false;
-                    }
-                    return false;//game over
-                }
-            }
-            
-        }
-   
-       if(boardmap[this.row]
-       && boardmap[this.row+1] 
-       && boardmap[this.row+2] 
-       && boardmap[this.row+3] )
-       {
-         
 
-
-           if(boardmap[this.row-1]){
-               boardmap[this.row -1][this.col].color = this.originalColor;
-               boardmap[this.row -1][this.col].empty = true;
-           }
-
-            
-              
-          
-
-           for(var i = 0; i < 4; i++){
-              
-               if(boardmap[this.row + i  ][this.col].empty){
-               boardmap[this.row +i ][this.col].color = this.color;
-               boardmap[this.row + i  ][this.col].empty = false;
-               }
-               
-           }
-          
-           if( !boardmap[this.row+4] || !boardmap[this.row+4][this.col].empty) {//Last square
+        /*
+        [ ][*][ ][ ]
+        [ ][*][ ][ ]
+        [ ][*][ ][ ]
+        [ ][*][ ][ ]
+    */
+      if(this.row === 0){
+          if(this.checkBelowVertical(boardmap)){
             this.done = true;
-       return true;
-        }
-
-           if(this.row < 15 && !boardmap[this.row+4][this.col].empty){
-            //This here probably doesn't work
-               this.done = true;
-               return true;
-               
-           }
-           return true;
-
-
-       }else if(!boardmap[this.row+3]){
-           this.row = 0;
-           this.col = Math.floor((Math.random() * 10) + 0);
-
-           //We have stopped must calculate if we need to clear.
-          // this.checkBoardForRows(boardmap);
-           this.done = true;
-           return true
-       }
-    }
-    drawNotFlipped(boardmap:Piece[][],left:number){
-        if(this.row === 0){
-               
-            if(!boardmap[this.row][this.col].empty){
-              
-            }
-            for(var i = 0; i < 4; i++){
-                if(!boardmap[this.row][this.col+i].empty){
-                    for(var j = 0; j < i; ++j){
-                        boardmap[this.row  ][this.col+j].color = this.color;
-                        boardmap[this.row  ][this.col+j].empty = false;
-                    }
-                    return false;//game over
-                }
-            }
-            
-        }
- 
- 
-     
-        if(boardmap[this.row] && boardmap[this.row][this.col]
-            && boardmap[this.row][this.col+1] 
-            && boardmap[this.row][this.col+2]  
-            && boardmap[this.row][this.col+3]  )
-            {
- 
-                if(boardmap[this.row-1]){
- 
-                    for(var i = 0; i < 4; i++){
-                        boardmap[this.row -1][this.col+i].color =   this.originalColor;
-
-                        boardmap[this.row -1][this.col +i].empty = true;
-                    }
- 
-                }
- 
-    
-            for(var i = 0; i < 4; i++){
-                boardmap[this.row  ][this.col+i].color = this.color;
-                boardmap[this.row  ][this.col+i].empty = false;
-            }
- 
- 
-             for(var i = 0; i <4; ++i){
-                if(this.row < 19 && !boardmap[this.row+1][this.col + i].empty){
-                    this.row = 0;
-                this.col = 0;
-
-                    this.done = true;
-                    return true;
-                }
-             }
-             return true;
-  
-            } if(!boardmap[this.row+1]){  
-                //this.checkBoardForRows(boardmap);    
-               // this.initP();
-              //  console.log("Finishing!");
+            return false//game is done;
+          }else{
+              this.drawVertical(boardmap,left);
+              return true;
+          }
+      }else{//not 0
+        if(this.row < 17){
+           
+            if(!this.checkBelowVertical(boardmap)){
+                this.deleteCoordinates(boardmap);
+                this.drawVertical(boardmap,left);
+                return true;
+            }else{
                 this.done = true;
                 return true;
             }
+            
+        }else{
+            this.done = true;
+            return true;
+        }
+      }
+    }
+    drawNotFlipped(boardmap:Piece[][],left:number){//Horizontal
+     /*
+        [ ][ ][ ][ ]
+        [*][*][*][*]
+        [ ][ ][ ][ ]
+        [ ][ ][ ][ ]
+    */
+        if(this.row === 0){// Really shouldn't have to worry about this case, I think it should span vertical everytime.
+            if(this.checkBelowHorizontal(boardmap,-1)){
+                this.done = true;
+                return false;
+            }else{
+                this.deleteCoordinates(boardmap);
+                this.drawHorizontal(boardmap,left);
+                return true;
+            }   
+        }
+        if(this.row <21){
+            if(!this.checkBelowHorizontal(boardmap,-1)){
+                this.deleteCoordinates(boardmap);
+                this.drawHorizontal(boardmap,left);
+                return true;
+            }else{
+                this.done = true;
+                return true;
+            }
+        }else{
+            this.done = true;
+            return true;
+        }
+    
     }
 
     
