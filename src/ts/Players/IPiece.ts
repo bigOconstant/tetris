@@ -3,7 +3,7 @@ import {Piece} from '../Piece/Piece';
 import {Coordinate} from './Coordinate';
 export class IPiece implements IPlayer{
     constructor(){
-        this.flipped = false;//Math.random() < 0.5;
+        this.flipped = true;//Math.random() < 0.5;
         this.coordinates = [];
         this.setcolor();
         this.done = false;
@@ -213,7 +213,37 @@ export class IPiece implements IPlayer{
     }
 
     downPress(boardmap:Piece[][]){
-        console.log("Not Implemented");
+         //vertical
+        /*
+        [ ][ ][ ][ ]  [ ][*][ ][ ]
+        [*][*][*][*]  [ ][*][ ][ ]
+        [ ][ ][ ][ ]  [ ][*][ ][ ]
+        [ ][ ][ ][ ]  [ ][*][ ][ ]
+        */
+        if(this.flipped){
+            if(this.row < 16){
+                if(!this.checkBelowVertical(boardmap,1)){
+                    this.deleteCoordinates(boardmap);
+                    this.row++;
+                   // this.drawVertical(boardmap,0);
+                   // this.draw(boardmap,0)
+                }}
+        }else{//horizontal
+            if(this.row < 18){
+                if(!this.checkBelowHorizontal(boardmap,0)){
+                   
+                    this.deleteCoordinates(boardmap);
+                    this.row++;
+                    //this.drawHorizontal(boardmap,0);
+                    //return this.draw(boardmap,0);
+                }else{
+                    // this.deleteCoordinates(boardmap);
+                    // this.draw(boardmap,0)
+                }
+               // this.deleteCoordinates(boardmap);
+            }
+            //this.deleteCoordinates(boardmap);
+        }
     }
     draw(boardmap:Piece[][],left:number){
         if(this.flipped){
@@ -341,7 +371,7 @@ export class IPiece implements IPlayer{
        return blocked;
     }
 
-    checkBelowVertical(boardmap:Piece[][]){
+    checkBelowVertical(boardmap:Piece[][],modifier:number){
                   /*
         [ ][*][ ][ ]
         [ ][*][ ][ ]
@@ -351,7 +381,8 @@ export class IPiece implements IPlayer{
        if(this.row+3 === 20){
            return true;
        }
-        return !boardmap[this.row+3][this.col+1].empty
+  
+        return !boardmap[this.row + 3 + modifier][this.col+1].empty
     }
     
 
@@ -365,7 +396,7 @@ export class IPiece implements IPlayer{
         [ ][*][ ][ ]
     */
       if(this.row === 0){
-          if(this.checkBelowVertical(boardmap)){
+          if(this.checkBelowVertical(boardmap,1)){
             this.done = true;
             return false//game is done;
           }else{
@@ -375,7 +406,7 @@ export class IPiece implements IPlayer{
       }else{//not 0
         if(this.row < 17){
            
-            if(!this.checkBelowVertical(boardmap)){
+            if(!this.checkBelowVertical(boardmap,0)){
                 this.deleteCoordinates(boardmap);
                 this.drawVertical(boardmap,left);
                 return true;
