@@ -68,15 +68,21 @@ export class OPiece implements IPlayer{
             //this.deletePrevSelf(boardmap);
             this.drawSelf(boardmap);
             return true;
-        }else{
+        }else{  
+            
 
-                    if(!boardmap[this.row+1][this.col].empty ||!boardmap[this.row+1][+this.col].empty ){
+                    // if(!boardmap[this.row+1][this.col].empty ||!boardmap[this.row+1][+this.col].empty ){
+                    //     this.done = true;
+                    //     return true;
+                    // }
+                    if(this.checkBelow(boardmap,-1)){
                         this.done = true;
-                        return true;
-                    }
+                        return true 
+                    }else{
                     this.deleteCoordinates(boardmap);
                    this.drawSelf(boardmap);
                   return true;
+                    }
         }
                   
     
@@ -94,42 +100,7 @@ export class OPiece implements IPlayer{
        // console.log("Calling descr");
         this.row = this.row + 1;
     }
-    deleteSelf(boardmap:Piece[][]){
-        
 
-        boardmap[this.row][this.col].color = this.originalColor;
-        boardmap[this.row+1][this.col].color = this.originalColor;
-        boardmap[this.row][this.col+1].color = this.originalColor;
-        boardmap[this.row+1][this.col+1].color = this.originalColor;
-
-        boardmap[this.row][this.col].empty = true;
-        boardmap[this.row+1][this.col].empty = true;
-        boardmap[this.row][this.col+1].empty = true;
-        boardmap[this.row+1][this.col+1].empty = true;
-
-    }
-    deletePrevSelf(boardmap:Piece[][]){
-        boardmap[this.row-2][this.col].color = this.originalColor;
-        boardmap[this.row-1][this.col].color = this.originalColor;
-        boardmap[this.row-2][this.col+1].color = this.originalColor;
-        boardmap[this.row-1][this.col+1].color = this.originalColor;
-
-        boardmap[this.row-2][this.col].empty = true;
-        boardmap[this.row-1][this.col].empty = true;
-        boardmap[this.row-2][this.col+1].empty = true;
-        boardmap[this.row-1][this.col+1].empty = true;
-    }
-    deleteFirstSelf(boardmap:Piece[][]){
-        boardmap[this.row][this.col].color = this.originalColor;
-        boardmap[this.row][this.col].empty = true;
-        boardmap[this.row][this.col+1].color = this.originalColor;
-        boardmap[this.row][this.col+1].empty = true;
-
-        boardmap[this.row-1][this.col].color = this.originalColor;
-        boardmap[this.row-1][this.col].empty = true;
-        boardmap[this.row-1][this.col+1].color = this.originalColor;
-        boardmap[this.row-1][this.col+1].empty = true;
-    }
     drawSelf(boardmap:Piece[][]){
       
         this.drawToPoint(boardmap,new Coordinate(this.row,this.col));
@@ -143,6 +114,18 @@ export class OPiece implements IPlayer{
 
        
 
+    }
+    checkBelow(boardmap:Piece[][],modifier:number){
+        /*[*][*]
+          [*][*]
+        */
+       if(!boardmap[this.row+2+modifier][this.col].empty){
+           return true;
+       }
+       if(!boardmap[this.row+2+modifier][this.col+1].empty){
+           return true;
+       }
+       return false;
     }
     drawFirstSelf(boardmap:Piece[][]){
 
