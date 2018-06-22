@@ -1,21 +1,48 @@
 import {IPlayer} from './IPlayer';
 import {Piece} from '../Piece/Piece';
+import {Coordinate} from './Coordinate';
 export class OPiece implements IPlayer{
     constructor(){
         this.flipped = Math.random() < 0.5;
         this.setcolor();
         this.done = false;
+        this.coordinates = [];
         this.col = Math.floor((Math.random() * 3) + 2);
       //  console.log("Creating object: col:"+this.col);
 
     }
     done:boolean;
+    coordinates:Coordinate[];
     flipped:boolean;
     row:number;
     col:number;
     originalColor:string = "rgb(66, 66, 66)";
     color:string;
+    drawToPoint(boardmap:Piece[][],Cord:Coordinate){
 
+        
+        if(boardmap[Cord.row] && boardmap[Cord.row][Cord.col]){
+        boardmap[Cord.row][Cord.col].color = this.color;
+        boardmap[Cord.row][Cord.col].empty = false;
+        this.coordinates.push(new Coordinate(Cord.row,Cord.col));
+        }else{
+            console.log("Trying to draw something that doesn't exists at boardmap["+Cord.row+"]["+Cord.col+"]");
+        }
+    }
+    deleteToPoint(boardmap:Piece[][],x:number,y:number){
+        if(boardmap[x] && boardmap[x][y]){
+           boardmap[x][y].color = this.originalColor;
+           boardmap[x][y].empty = true;
+        }else{
+            console.log("Trying to delete something that doesn't exists at boardmap["+x+"]["+y+"]");
+        }
+    }
+    deleteCoordinates(boardmap){
+        while (this.coordinates.length >0){
+            var current = this.coordinates.pop();
+            this.deleteToPoint(boardmap,current.row,current.col);
+        }
+    }
     draw(boardmap:Piece[][],left:number){
         //handle if row zero and if peice is already there return false you lose
         if(this.row == 19){
@@ -36,7 +63,7 @@ export class OPiece implements IPlayer{
 
         }else if(this.row === 1){
            //console console.log("Deleting first self");
-            this.deleteFirstSelf(boardmap);
+           this.deleteCoordinates(boardmap);
            // this.deletePrevSelf(boardmap);
             //this.deletePrevSelf(boardmap);
             this.drawSelf(boardmap);
@@ -47,7 +74,7 @@ export class OPiece implements IPlayer{
                         this.done = true;
                         return true;
                     }
-                   this.deletePrevSelf(boardmap);
+                    this.deleteCoordinates(boardmap);
                    this.drawSelf(boardmap);
                   return true;
         }
@@ -105,23 +132,27 @@ export class OPiece implements IPlayer{
     }
     drawSelf(boardmap:Piece[][]){
       
+        this.drawToPoint(boardmap,new Coordinate(this.row,this.col));
+        //boardmap[this.row][this.col].color = this.color;
+        this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col));
+        //boardmap[this.row+1][this.col].color = this.color;
+        this.drawToPoint(boardmap,new Coordinate(this.row,this.col+1));
+       // boardmap[this.row][this.col+1].color = this.color;
+        //boardmap[this.row+1][this.col+1].color = this.color;
+        this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col+1));
 
-        boardmap[this.row][this.col].color = this.color;
-        boardmap[this.row+1][this.col].color = this.color;
-        boardmap[this.row][this.col+1].color = this.color;
-        boardmap[this.row+1][this.col+1].color = this.color;
-
-        boardmap[this.row][this.col].empty = false;
-        boardmap[this.row+1][this.col].empty = false;
-        boardmap[this.row][this.col+1].empty = false;
-        boardmap[this.row+1][this.col+1].empty = false;
+       
 
     }
     drawFirstSelf(boardmap:Piece[][]){
-        boardmap[this.row][this.col].color = this.color;
-        boardmap[this.row][this.col].empty = false;
-        boardmap[this.row][this.col+1].color = this.color;
-        boardmap[this.row][this.col+1].empty = false;
+
+        this.drawToPoint(boardmap,new Coordinate(this.row,this.col));
+        this.drawToPoint(boardmap,new Coordinate(this.row,this.col+1));
+
+        //boardmap[this.row][this.col].color = this.color;
+        //boardmap[this.row][this.col].empty = false;
+      //  boardmap[this.row][this.col+1].color = this.color;
+       // boardmap[this.row][this.col+1].empty = false;
     }
     downPress(boardmap:Piece[][]){
        // console.log("Calling down press@")
@@ -129,35 +160,35 @@ export class OPiece implements IPlayer{
         if(this.row < 18){
             if(boardmap[this.row+2][this.col].empty){
                 if(boardmap[this.row+2][this.col+1].empty){
-                    this.deleteSelf(boardmap);
+                    this.deleteCoordinates(boardmap);
                     ++this.row;
                 }
-                this.deleteSelf(boardmap);
+                this.deleteCoordinates(boardmap);
             }
-            this.deleteSelf(boardmap);
+            this.deleteCoordinates(boardmap);
         }
-        this.deleteSelf(boardmap);
+        this.deleteCoordinates(boardmap);
     }
 
 
     leftPress(boardmap:Piece[][],left:number){
         if(this.col === 0){
             //do nothing
-            this.deleteSelf(boardmap);
+            this.deleteCoordinates(boardmap);
             return;
         }
         if(this.col > 0){
             if(boardmap[this.row][this.col-1].empty){
                 if(this.row <19){
                     if(boardmap[this.row +1][this.col -1].empty){
-                        this.deleteSelf(boardmap);
+                        this.deleteCoordinates(boardmap);
 
                         --this.col;
-                    }else{this.deleteSelf(boardmap);}
+                    }else{this.deleteCoordinates(boardmap);;}
                 }
             }
         }
-        this.deleteSelf(boardmap);
+        this.deleteCoordinates(boardmap);
         return;
     }
     rightPress(boardmap:Piece[][],left:number){
@@ -169,22 +200,21 @@ export class OPiece implements IPlayer{
             if(boardmap[this.row][this.col+2].empty){
                 if(this.row <19){
                     if(boardmap[this.row +1][this.col +2].empty){
-                        this.deleteSelf(boardmap);
+                        this.deleteCoordinates(boardmap);
 
                         ++this.col;
                         
                     }
                 }else{
-                    this.deleteSelf(boardmap);
-                    
+                    this.deleteCoordinates(boardmap);
                     ;}
             }
         }
-        this.deleteSelf(boardmap);
+        this.deleteCoordinates(boardmap);
         return;
     }
     upPress(boardmap:Piece[][],left:number){
-        this.deleteSelf(boardmap);
+        this.deleteCoordinates(boardmap);
        // this.draw(boardmap,left);
 
     }
