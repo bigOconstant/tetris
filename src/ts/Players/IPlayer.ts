@@ -1,7 +1,6 @@
 import {Piece} from '../Piece/Piece';
 
 export interface IPlayer{
-    flipped:boolean;
     row:number;
     col:number;
     color:string;
