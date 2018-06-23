@@ -91,7 +91,6 @@ export class JPiece implements IPlayer{
     }
 
     draw(boardmap:Piece[][],left:number){
-        console.log("Drawing");
         /*   2          3           4           1
          [ ][ ][ ] = [ ][*][*] = [ ][ ][ ] = [ ][*][ ]
          [*][ ][ ] = [ ][*][ ] = [*][*][*] = [ ][*][ ]
@@ -101,7 +100,6 @@ export class JPiece implements IPlayer{
          */
         switch(this.state){
             case 1:
-            console.log("Drawing 1");
                 if(this.row > 18){
                     this.done = true;
                     return true;
@@ -699,12 +697,12 @@ export class JPiece implements IPlayer{
         
 
        if(!this.checkLeft(boardmap,0)){
-          // console.log("Can do it")
+       
         this.deleteCoordinates(boardmap);
            this.col--;
        }else{this.deleteCoordinates(boardmap)}
        //this.deleteCoordinates(boardmap);
-        //console.log("Left Press");
+        
     }
     rightPress(boardmap:Piece[][],left:number){
         if(!this.checkRight(boardmap,0)){
