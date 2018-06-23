@@ -10,14 +10,84 @@ export class JPiece implements IPlayer{
     color:string;
     coordinates:Coordinate[];
     state:number;
+    
+    matrixOne:number[][];
+    matrixTwo:number[][];
+    matrixThree:number[][];
+    matrixFour:number[][];
 
     constructor(){
         this.coordinates = [];
         this.setcolor();
         this.done = false;
         this.col = Math.floor((Math.random() * 6) + 2);
-        this.state = 4;//Math.floor((Math.random()*4) +1);
+        this.state = 3;//Math.floor((Math.random()*4) +1);
+        this.matrixOne =  
+        [
+                [0,1,0],
+                [0,1,0],
+                [1,1,0],
+                [0,0,0]
+        ]   
+
         
+        this.matrixTwo =  
+        [
+               [0,0,0],
+               [1,0,0],
+               [1,1,1],
+               [0,0,0]
+           ]   
+        
+        this.matrixThree =  
+        [
+               [0,1,1],
+               [0,1,0],
+               [0,1,0],
+               [0,0,0]
+           ] 
+           this.matrixFour =  
+           [
+                  [0,0,0],
+                  [1,1,1],
+                  [0,0,1],
+                  [0,0,0]
+              ] 
+           
+        };
+
+    checkIfFits(row:number,boardmap:Piece[][]){
+        var inputMatrix = [];
+        switch(this.state){
+            case 1:
+            inputMatrix = this.matrixOne;
+            break;
+
+            case 2:
+            inputMatrix = this.matrixTwo;
+            break;
+
+            case 3:
+            inputMatrix = this.matrixThree;
+            break;
+
+            case 4:
+            inputMatrix = this.matrixFour;
+            break;
+        }
+        for(var i = 0; i <4; ++i){
+            for(var j = 0; j < 3; ++j){
+                if(inputMatrix[i][j] === 1){
+                    if(!boardmap[row+i] || !boardmap[this.row+i][this.col+j]){
+                        return false;
+                    }
+                    if(!boardmap[row+i][this.col+j].empty){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     draw(boardmap:Piece[][],left:number){
@@ -244,6 +314,15 @@ export class JPiece implements IPlayer{
     }
     checkRightFour(boardmap:Piece[][],modifier:number){
         var blocked = false;
+        if(!boardmap[this.row+1] || !boardmap[this.row+1][this.col+3]){
+            return true;
+        }
+        if(!boardmap[this.row+2] || !boardmap[this.row+2][this.col+3]){
+            return true;
+        }
+
+
+
         if(!boardmap[this.row+1][this.col+3].empty){
             blocked = true;
         }
@@ -254,6 +333,22 @@ export class JPiece implements IPlayer{
     }
     checkRightThree(boardmap:Piece[][],modifier:number){
         var blocked = false;
+
+        /*Exist checks*/
+        if(!boardmap[this.row][this.col+3]){
+            return true;
+        }
+        if(!boardmap[this.row+1] || !boardmap[this.row+1][this.col+2]){
+            return true;
+        }
+        if(!boardmap[this.row+2] || !boardmap[this.row+2][this.col+2]){
+            return true;
+        }
+
+
+        /*************/
+
+
         if(!boardmap[this.row][this.col+3].empty){
             blocked = true;
         }
@@ -266,6 +361,13 @@ export class JPiece implements IPlayer{
         return blocked;
     }
     checkRightTwo(boardmap:Piece[][],modifier:number){
+
+        /*Exist checks*/
+        if(!boardmap[this.row+1] || !boardmap[this.row+1][this.col+1] || !boardmap[this.row+2] || !boardmap[this.row+2][this.col+3]){
+            return true;
+        }
+
+        /************* */
         var blocked = false;
         if(!boardmap[this.row+1][this.col+1].empty){
             blocked = true;
@@ -277,14 +379,26 @@ export class JPiece implements IPlayer{
     }
 
     checkRightOne(boardmap:Piece[][],modifier:number){
+              /*   2          3           4           1
+        [ ][ ][ ] = [ ][*][*] = [ ][ ][ ] = [ ][*][ ]
+        [*][ ][ ] = [ ][*][ ] = [*][*][*] = [ ][*][ ]
+        [*][*][*] = [ ][*][ ] = [ ][ ][*] = [*][*][ ]
+        [ ][ ][ ] = [ ][ ][ ] = [ ][ ][ ] = [ ][ ][ ]
+
+        */
+
+        if(!boardmap[this.row] || !boardmap[this.row][this.col+2] || !boardmap[this.row +1] ||!boardmap[this.row +1][this.col+2] ||!boardmap[this.row + 2] || !boardmap[this.row + 2][this.col+2] ){
+            return true;
+        }
         var blocked = false;
+       
         if(!boardmap[this.row][this.col+2].empty){
             blocked = true;
         }
-        if(!blocked[this.row+2][this.col+2].empty){
+        if(!boardmap[this.row +1][this.col+2].empty){
             blocked = true;
         }
-        if(!blocked[this.row+3][this.col+2].empty){
+        if(!boardmap[this.row + 2][this.col+2].empty){
             blocked = true;
         }
         return blocked;
@@ -310,24 +424,44 @@ export class JPiece implements IPlayer{
            returnVal = this.checkLeftThree(boardmap,modifier);
            break;
            case 4:
-           this.checkLeftFour(boardmap,modifier);
+           returnVal = this.checkLeftFour(boardmap,modifier);
            break;
        }
        return returnVal;
 
     }
     checkLeftFour(boardmap:Piece[][],modifier:number){
+         /*   2          3           4           1
+        [ ][ ][ ] = [ ][*][*] = [ ][ ][ ] = [ ][*][ ]
+        [*][ ][ ] = [ ][*][ ] = [*][*][*] = [ ][*][ ]
+        [*][*][*] = [ ][*][ ] = [ ][ ][*] = [*][*][ ]
+        [ ][ ][ ] = [ ][ ][ ] = [ ][ ][ ] = [ ][ ][ ]
+
+        */
+        if(!boardmap[this.row+1] || !boardmap[this.row+1][this.col-1]|| !boardmap[this.row+2] || !boardmap[this.row+2][this.col+1]){
+            return true;
+        }
         var blocked = false;
+       // console.log("empty:"+boardmap[this.row+1][this.col-1].empty);
         if(!boardmap[this.row+1][this.col-1].empty){
+           
+            return true;
             blocked = true;
         }
         if(!boardmap[this.row+2][this.col+1].empty){
+          
             blocked = true;
+            return true;
         }
         return blocked;
     }
 
+
     checkLeftThree(boardmap:Piece[][],modifier:number){
+
+        if(!boardmap[this.row+1] ||!boardmap[this.row+1][this.col] ||!boardmap[this.row+2] || !boardmap[this.row+2][this.col]){
+            return true;
+        }
         var blocked = false;
         if(!boardmap[this.row][this.col].empty){
             blocked = true;
@@ -342,6 +476,9 @@ export class JPiece implements IPlayer{
 
     }
     checkLeftTwo(boardmap:Piece[][],modifier:number){
+        if(!boardmap[this.row+1] || !boardmap[this.row+1][this.col-1] || !boardmap[this.row+2] || !boardmap[this.row+2][this.col-1]){
+            return true;
+        }
         var blocked = false;
 
         if(!boardmap[this.row+1][this.col-1].empty){
@@ -354,6 +491,11 @@ export class JPiece implements IPlayer{
     }
     checkLeftOne(boardmap:Piece[][],modifier:number){
         var blocked = false;
+
+        if(!boardmap[this.row+1] || !boardmap[this.row+1][this.col] || !boardmap[this.row+2] ||!boardmap[this.row+2][this.col-1]){
+            return true;
+        }
+
         if(!boardmap[this.row][this.col].empty){
             blocked = true;
         }
@@ -402,13 +544,16 @@ export class JPiece implements IPlayer{
 
         */
         var blocked = false;
-        if(!boardmap[this.row+1][this.col].empty){
+        if(!boardmap[this.row+1+modifier] || !boardmap[this.row+1+modifier][this.col] || !boardmap[this.row+1 +modifier][this.col+1]||!boardmap[this.row+2] ||!boardmap[this.row+2 +modifier][this.col+2]){
+            return true;
+        }
+        if(!boardmap[this.row+1+modifier][this.col].empty){
             blocked = true;
         }
-        if(!boardmap[this.row+1][this.col+1].empty){
+        if(!boardmap[this.row+1 +modifier][this.col+1].empty){
             blocked = true;
         }
-        if(!boardmap[this.row+2][this.col+2].empty){
+        if(!boardmap[this.row+2 +modifier][this.col+2].empty){
             blocked = true;
         }
         return blocked;
@@ -422,11 +567,16 @@ export class JPiece implements IPlayer{
         [ ][ ][ ] = [ ][ ][ ] = [ ][ ][ ] = [ ][ ][ ]
 
         */
+
+        if(!boardmap[this.row+2 +modifier ] || !boardmap[this.row+2 +modifier ][this.col+1] || !boardmap[this.row+modifier] || !boardmap[this.row+modifier][this.col+2] ){
+            return true;
+        }
+
         var blocked = false;
-        if(!boardmap[this.row+2][this.col+1].empty){
+        if(!boardmap[this.row+2 +modifier ][this.col+1].empty){
             blocked = true;
         }
-        if(!boardmap[this.row][this.col+2].empty){
+        if(!boardmap[this.row+modifier][this.col+2].empty){
             blocked = true;
         }
         return blocked;
@@ -440,6 +590,9 @@ export class JPiece implements IPlayer{
 
         */
         var blocked = false;
+        if(!boardmap[this.row +2 + modifier] || !boardmap[this.row +2 + modifier][this.col] ||!boardmap[this.row+2 + modifier] || !boardmap[this.row+2 + modifier][this.col+1] ){
+            return true;
+        }
         if(!boardmap[this.row +2 + modifier][this.col].empty){
             blocked = true;
         }
@@ -450,6 +603,11 @@ export class JPiece implements IPlayer{
     }
     checkBelowTwo(boardmap:Piece[][],modifier:number){
         var blocked = false;
+        if(!boardmap[this.row+2+modifier] || !boardmap[this.row+2+modifier][this.col] || !boardmap[this.row+2+modifier][this.col+1] || !boardmap[this.row+2+modifier][this.col+2] ){
+            return true;
+        }
+
+
         if(!boardmap[this.row+2+modifier][this.col].empty){
             blocked = true;
         }
@@ -504,6 +662,7 @@ export class JPiece implements IPlayer{
         }
     }
 
+
     drawToPoint(boardmap:Piece[][],Cord:Coordinate){
 
         
@@ -530,15 +689,41 @@ export class JPiece implements IPlayer{
         }
     }
     leftPress(boardmap:Piece[][],left:number){
-        console.log("Left Press");
+       /*   2          3           4           1
+        [ ][ ][ ] = [ ][*][*] = [ ][ ][ ] = [ ][*][ ]
+        [*][ ][ ] = [ ][*][ ] = [*][*][*] = [ ][*][ ]
+        [*][*][*] = [ ][*][ ] = [ ][ ][*] = [*][*][ ]
+        [ ][ ][ ] = [ ][ ][ ] = [ ][ ][ ] = [ ][ ][ ]
+
+        */
+        
+
+       if(!this.checkLeft(boardmap,0)){
+          // console.log("Can do it")
+        this.deleteCoordinates(boardmap);
+           this.col--;
+       }else{this.deleteCoordinates(boardmap)}
+       //this.deleteCoordinates(boardmap);
+        //console.log("Left Press");
     }
     rightPress(boardmap:Piece[][],left:number){
-        console.log("right Press");
+        if(!this.checkRight(boardmap,0)){
+            this.deleteCoordinates(boardmap);
+            this.col++;
+        }else{this.deleteCoordinates(boardmap)}
     }
     upPress(boardmap:Piece[][],left:number){
-        console.log("Up Press");
+        this.deleteCoordinates(boardmap);
+        var prevState = this.state;
+        this.incrementState();
+        if(!this.checkIfFits(this.row,boardmap)){
+            this.state = prevState;
+        }
     }
     downPress(boardmap:Piece[][]){
-        console.log("Down Press");
+        this.deleteCoordinates(boardmap);
+        if(this.checkIfFits(this.row+1,boardmap)){
+            this.row++;
+        }
     }
 }
