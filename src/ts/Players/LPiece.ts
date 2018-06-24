@@ -61,24 +61,45 @@ export class LPiece implements IPlayer{
 
 
     leftPress(boardmap:Piece[][],left:number){
-        console.log("LeftPress");
+        if(this.checkBelowWrapper(boardmap,this.row,this.col-1)){
+            this.col--;
+        }
     }
     rightPress(boardmap:Piece[][],left:number){
-        console.log("Right Press");
+        if(this.checkBelowWrapper(boardmap,this.row,this.col+1)){
+            this.col++;
+        }else{
+           
+        }
     }
     upPress(boardmap:Piece[][],left:number){
-        console.log("Up Press");
+        var deletedPoints = this.deleteCoordinates(boardmap);
+        var oldstate = this.state;
+        this.incrementState();
+        if(this.checkBelowWrapper(boardmap,this.row,this.col)){
+           
+        }else{
+            this.state = oldstate;
+            deletedPoints.forEach(point => {
+                this.drawToPoint(boardmap,point)
+            });
+
+        }
+
     }
 
     downPress(boardmap:Piece[][]){
-        console.log("Down Press");
+       
+        if(this.checkBelowWrapper(boardmap,this.row+1,this.col)){
+            this.row++;
+        }
     }
     draw(boardmap:Piece[][],left:number){
         if(this.row >17){
             this.done = true;
             return true;
         }else{
-            if(!this.checkBelowWrapper(boardmap)){
+            if(!this.checkBelowWrapper(boardmap,this.row,this.col)){
                 this.done = true;
                 if(this.row === 0){
                     return false;
@@ -92,22 +113,22 @@ export class LPiece implements IPlayer{
             }
         }
     }
-    checkBelowWrapper(boardmap:Piece[][]){
+    checkBelowWrapper(boardmap:Piece[][],row:number,col:number){
         switch(this.state){
             case 1:
-            return this.checkBelow(boardmap,this.matrixOne);
+            return this.checkBelow(boardmap,this.matrixOne,row,col);
             break;
 
             case 2:
-            return this.checkBelow(boardmap,this.matrixTwo);
+            return this.checkBelow(boardmap,this.matrixTwo,row,col);
             break;
 
             case 3:
-            return this.checkBelow(boardmap,this.matrixTwo);
+            return this.checkBelow(boardmap,this.matrixThree,row,col);
             break;
 
             case 4:
-            return this.checkBelow(boardmap,this.matrixThree);
+            return this.checkBelow(boardmap,this.matrixFour,row,col);
             break;
 
         }
@@ -133,19 +154,19 @@ export class LPiece implements IPlayer{
             break;
 
             case 3:
-             this.drawMatrix(boardmap,this.matrixTwo);
+             this.drawMatrix(boardmap,this.matrixThree);
             break;
 
             case 4:
-             this.drawMatrix(boardmap,this.matrixThree);
+             this.drawMatrix(boardmap,this.matrixFour);
             break;
 
         }
     }
-    checkBelow(boardmap:Piece[][],matrix:number[][]){
+    checkBelow(boardmap:Piece[][],matrix:number[][],row:number,col:number){
 
         var deletedPoints = this.deleteCoordinates(boardmap);
-        if(this.checkIfFits(this.row,this.col,boardmap,matrix)){
+        if(this.checkIfFits(row,col,boardmap,matrix)){
             return true;
         }else{
             deletedPoints.forEach(point => {
@@ -159,7 +180,7 @@ export class LPiece implements IPlayer{
         for(var i = 0; i <matrix.length; ++i){
             for(var j = 0; j < matrix[i].length; ++j){
                 if(matrix[i][j] === 1){
-                    if(!boardmap[row+i] || !boardmap[this.row+i][col+j]){
+                    if(!boardmap[row+i] || !boardmap[row+i][col+j]){
                         return false;
                     }
                     if(!boardmap[row+i][col+j].empty){
