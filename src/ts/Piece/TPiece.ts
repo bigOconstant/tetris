@@ -119,7 +119,7 @@ export class TPiece{
        }
       
      //  console.log("About to do next kind:"+this.kind);
-     this.kind = "L";
+     //this.kind = "L";
        if(this.kind === "I"){
            this.player = new IPiece(); //new OPiece();
        }else if(this.kind === "0"){
