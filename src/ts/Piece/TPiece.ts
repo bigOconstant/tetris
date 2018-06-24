@@ -4,6 +4,7 @@ import {IPiece} from '../Players/IPiece';
 import { OPiece } from '../Players/OPiece';
 import { XPiece } from '../Players/XPiece';
 import {JPiece} from '../Players/JPiece';
+import {LPiece} from '../Players/LPiece';
 export class TPiece{
     kind: string;
     color: string;
@@ -73,7 +74,7 @@ export class TPiece{
 
 
     generateType(){
-        var type = Math.floor((Math.random() * 4) + 1);
+        var type = Math.floor((Math.random() * 5) + 1);
        //  switch(type){
        //      case 0:
        //          this.kind = "0";
@@ -110,10 +111,15 @@ export class TPiece{
            break;
            case 4:
            this.kind = "J";
+           break;
+           case 5:
+           this.kind = "L";
+           break;
 
        }
       
      //  console.log("About to do next kind:"+this.kind);
+     this.kind = "L";
        if(this.kind === "I"){
            this.player = new IPiece(); //new OPiece();
        }else if(this.kind === "0"){
@@ -124,6 +130,8 @@ export class TPiece{
           this.player = new XPiece();
       }else if(this.kind === "J"){
           this.player = new JPiece();
+      }else if(this.kind === "L"){
+          this.player = new LPiece();
       }
     }
 

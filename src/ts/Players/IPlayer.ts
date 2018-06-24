@@ -10,8 +10,7 @@ export interface IPlayer{
     upPress(boardmap:Piece[][],left:number);
     downPress(boardmap:Piece[][]);
     draw(boardmap:Piece[][],left:number);
-    // drawFlipped(boardmap:Piece[][],left:number);//Verticle
-    // drawNotFlipped(boardmap:Piece[][],left:number); //horizontal
+
     decr();
     setcolor();
 

@@ -206,80 +206,32 @@ export class JPiece implements IPlayer{
     drawCurrent(boardmap:Piece[][],left:number){
         switch(this.state){
             case 1:
-              this.drawOne(boardmap,left);
+              this.drawMatrix(boardmap,this.matrixOne);
             break;
 
             case 2:
-            this.drawTwo(boardmap,left);
+            this.drawMatrix(boardmap,this.matrixTwo);
             break;
 
             case 3:
-            this.drawThree(boardmap,left);
+            this.drawMatrix(boardmap,this.matrixThree);
             break;
 
             case 4:
-            this.drawFour(boardmap,left);
+            this.drawMatrix(boardmap,this.matrixFour);
             break;
         }
     }
 
-    drawFour(boardmap:Piece[][],left:number){
-        /*   2          3           4           1
-         [ ][ ][ ] = [ ][*][*] = [ ][ ][ ] = [ ][*][ ]
-         [*][ ][ ] = [ ][*][ ] = [*][*][*] = [ ][*][ ]
-         [*][*][*] = [ ][*][ ] = [ ][ ][*] = [*][*][ ]
-         [ ][ ][ ] = [ ][ ][ ] = [ ][ ][ ] = [ ][ ][ ]
-      
-         */
-        this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col));
-        this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col+1));
-        this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col+2));
-        this.drawToPoint(boardmap,new Coordinate(this.row+2,this.col+2));
-
-    }
-
-    drawThree(boardmap:Piece[][],left:number){
-  /*   2          3           4           1
-   [ ][ ][ ] = [ ][*][*] = [ ][ ][ ] = [ ][*][ ]
-   [*][ ][ ] = [ ][*][ ] = [*][*][*] = [ ][*][ ]
-   [*][*][*] = [ ][*][ ] = [ ][ ][*] = [*][*][ ]
-   [ ][ ][ ] = [ ][ ][ ] = [ ][ ][ ] = [ ][ ][ ]
-
-   */
-    this.drawToPoint(boardmap,new Coordinate(this.row,this.col+1));
-    this.drawToPoint(boardmap,new Coordinate(this.row,this.col+2));
-    this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col+1));
-    this.drawToPoint(boardmap,new Coordinate(this.row+2,this.col+1)); 
-   }
-
-    drawTwo(boardmap:Piece[][],left:number){
-    /*   2          3           4           1
-   [ ][ ][ ] = [ ][*][*] = [ ][ ][ ] = [ ][*][ ]
-   [*][ ][ ] = [ ][*][ ] = [*][*][*] = [ ][*][ ]
-   [*][*][*] = [ ][*][ ] = [ ][ ][*] = [*][*][ ]
-   [ ][ ][ ] = [ ][ ][ ] = [ ][ ][ ] = [ ][ ][ ]
-
-   */
-        this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col));
-        this.drawToPoint(boardmap,new Coordinate(this.row+2,this.col));
-        this.drawToPoint(boardmap,new Coordinate(this.row+2,this.col+1));
-        this.drawToPoint(boardmap,new Coordinate(this.row+2,this.col+2));
-
-    }
-
-    drawOne(boardmap:Piece[][],left:number){
-             /*   2          3           4           1
-        [ ][ ][ ] = [ ][*][*] = [ ][ ][ ] = [ ][*][ ]
-        [*][ ][ ] = [ ][*][ ] = [*][*][*] = [ ][*][ ]
-        [*][*][*] = [ ][*][ ] = [ ][ ][*] = [*][*][ ]
-        [ ][ ][ ] = [ ][ ][ ] = [ ][ ][ ] = [ ][ ][ ]
-
-        */
-       this.drawToPoint(boardmap,new Coordinate(this.row+2,this.col));
-       this.drawToPoint(boardmap,new Coordinate(this.row+2,this.col+1));
-       this.drawToPoint(boardmap,new Coordinate(this.row+1,this.col+1));
-       this.drawToPoint(boardmap,new Coordinate(this.row,this.col+1));
-
+   
+    drawMatrix(boardmap:Piece[][],matrix:number[][]){
+        for(var i = 0; i < 3; ++i){
+            for(var j = 0; j < 3; ++j){
+                if(matrix[i][j] === 1){
+                this.drawToPoint(boardmap,new Coordinate(this.row+i, this.col +j))
+                }
+            }
+        }
     }
 
 
