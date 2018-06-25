@@ -1,10 +1,13 @@
 import {Piece} from '../Piece/Piece';
 import {IPlayer} from '../Players/IPlayer';
+import {Player} from '../Players/Player'
 import {IPiece} from '../Players/IPiece';
 import { OPiece } from '../Players/OPiece';
 import { XPiece } from '../Players/XPiece';
 import {JPiece} from '../Players/JPiece';
 import {LPiece} from '../Players/LPiece';
+import { ZPiece } from '../Players/ZPiece';
+import {Zshape} from '../Data';
 export class TPiece{
     kind: string;
     color: string;
@@ -12,11 +15,13 @@ export class TPiece{
     started:boolean;
     firstTime:Boolean;
     originalColor:string = "rgb(66, 66, 66)";
-    player:IPlayer;
+    player:Player;
     
     constructor(boardmap:Piece[][]){
         //this.kind = kind;
        this.initP(boardmap);
+       console.log("Inside Tpiece printing out Zshape");
+       console.log(Zshape);
        
     }
 
@@ -74,7 +79,7 @@ export class TPiece{
 
 
     generateType(){
-        var type = Math.floor((Math.random() * 5) + 1);
+        var type = Math.floor((Math.random() * 6) + 1);
        //  switch(type){
        //      case 0:
        //          this.kind = "0";
@@ -115,34 +120,41 @@ export class TPiece{
            case 5:
            this.kind = "L";
            break;
+           case 6:
+           this.kind = "Z"
 
        }
       
      //  console.log("About to do next kind:"+this.kind);
-     //this.kind = "L";
-       if(this.kind === "I"){
-           this.player = new IPiece(); //new OPiece();
-       }else if(this.kind === "0"){
-         //  console.log("Creating Opiece");
-           this.player = new OPiece();
-       }else if(this.kind === "X"){
-        //  console.log("Creating Opiece");
-          this.player = new XPiece();
-      }else if(this.kind === "J"){
-          this.player = new JPiece();
-      }else if(this.kind === "L"){
-          this.player = new LPiece();
-      }
+     this.kind = "Z";
+     if(this.kind === "Z"){
+         this.player = new Player(Zshape)
+     }
+    //    if(this.kind === "I"){
+    //        this.player = new IPiece(); //new OPiece();
+    //    }else if(this.kind === "0"){
+    //      //  console.log("Creating Opiece");
+    //        this.player = new OPiece();
+    //    }else if(this.kind === "X"){
+    //     //  console.log("Creating Opiece");
+    //       this.player = new XPiece();
+    //   }else if(this.kind === "J"){
+    //       this.player = new JPiece();
+    //   }else if(this.kind === "L"){
+    //       this.player = new LPiece();
+    //   }else if(this.kind === "Z"){
+    //       this.player = new ZPiece();
+    //   }
     }
 
     draw(boardmap:Piece[][],left:number){
      //   console.log("calling draw");
         if(this.player.done){
-            this.player = new IPiece();
+            this.player = new Player(Zshape);
         }
       var returnval =  this.player.draw(boardmap,left);
       if(this.player.done){
-        this.player = new IPiece();
+        this.player = new Player(Zshape);
         this.initP(boardmap);
     }
     return returnval;

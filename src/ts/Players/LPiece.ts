@@ -22,7 +22,7 @@ export class LPiece implements IPlayer{
         this.setcolor();
         this.done = false;
         this.col = Math.floor((Math.random() * 6) + 2);
-        this.state = 3;//Math.floor((Math.random()*4) +1);
+        this.state = 1;//Math.floor((Math.random()*4) +1);
 
 
         this.matrixOne =  
