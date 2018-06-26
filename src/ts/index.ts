@@ -33,14 +33,14 @@ function downPress(e){
     this.window.width = window.innerWidth;
     var center = Math.floor(window.innerWidth /2);
     if(xPos > center -200 && xPos < center+200){
-        if(yPos > 60 && yPos <860){
+      
             board.upPress();
-        }
+
     }
-    else if(xPos < center){
+    else if(xPos < center -200 ){
         
         board.leftPress();
-    }else{
+    }else if(xPos > center +200){
     board.rightPress();
     }
 }
