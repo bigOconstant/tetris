@@ -58,10 +58,11 @@ export class Player {
             }
         }
         draw(boardmap:Piece[][],left:number){
-            if(this.row >17){
-                this.done = true;
-                return true;
-            }else{
+            // if(this.row >17){
+            //     this.done = true;
+            //     return true;
+            // }
+           
                 if(!this.checkBelowWrapper(boardmap,this.row,this.col)){
                     this.done = true;
                     if(this.row === 0){
@@ -75,7 +76,7 @@ export class Player {
     
                 }
             }
-        }
+        
         checkBelowWrapper(boardmap:Piece[][],row:number,col:number){
             switch(this.state){
                 case 1:
@@ -98,8 +99,8 @@ export class Player {
         }
     
         drawMatrix(boardmap:Piece[][],matrix:number[][]){
-            for(var i = 0; i < 3; ++i){
-                for(var j = 0; j < 3; ++j){
+            for(var i = 0; i < matrix.length; ++i){
+                for(var j = 0; j < matrix[i].length; ++j){
                     if(matrix[i][j] === 1){
                     this.drawToPoint(boardmap,new Coordinate(this.row+i, this.col +j))
                     }
