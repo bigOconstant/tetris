@@ -7,18 +7,20 @@ function drawBoard(){
     //console.log("Calling draw board")
     board.drawBoard();
 };
+var time = 400;
 function descTime(){
     board.decrTime();
+    time = time - 50;
 }
+
 // board.drawBoard();
 var timerForLoadingResult = window.setInterval(drawBoard, 20);
-var timerForLoadingResult = window.setInterval(descTime, 400);
+var timerForLoadingResult = window.setInterval(descTime, 300);
+
+
+
 window.addEventListener('keydown',check,false);
-window.addEventListener("gamepadconnected", function(e:any) {
-    console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
-      e.gamepad.index, e.gamepad.id,
-      e.gamepad.buttons.length, e.gamepad.axes.length);
-  });
+
 
 function check(e:any) {
     board.keyPress(e);

@@ -1,10 +1,6 @@
 import {Piece} from '../Piece/Piece';
-import {IPlayer} from '../Players/IPlayer';
-import {IPiece} from '../Players/IPiece';
-import { OPiece } from '../Players/OPiece';
-import { XPiece } from '../Players/XPiece';
-import {JPiece} from '../Players/JPiece';
-import {LPiece} from '../Players/LPiece';
+import {Player} from '../Players/Player'
+import {Zshape,Ishape,Jshape,Lshape,Sshape,Tshape,OShape} from '../Data';
 export class TPiece{
     kind: string;
     color: string;
@@ -12,11 +8,12 @@ export class TPiece{
     started:boolean;
     firstTime:Boolean;
     originalColor:string = "rgb(66, 66, 66)";
-    player:IPlayer;
+    player:Player;
     
     constructor(boardmap:Piece[][]){
         //this.kind = kind;
        this.initP(boardmap);
+
        
     }
 
@@ -31,7 +28,7 @@ export class TPiece{
                 }
             }
             console.log(string);
-            //console.log("_");
+
         }
 
     }
@@ -74,31 +71,8 @@ export class TPiece{
 
 
     generateType(){
-        var type = Math.floor((Math.random() * 5) + 1);
-       //  switch(type){
-       //      case 0:
-       //          this.kind = "0";
-       //          break;
-       //      case 1:
-       //          this.kind = "T";
-       //          break;
-       //      case 2:
-       //          this.kind = "I";
-       //          break;
-       //      case 3:
-       //          this.kind = "S";
-       //          break;
-       //      case 4:
-       //          this.kind = "Z";
-       //          break;
-       //      case 5:
-       //          this.kind = "J";
-       //          break;
-       //      case 6:
-       //          this.kind = "L";
-       //          break;
-       //  }
-     //  console.log("type here = "+type);
+        var type = Math.floor((Math.random() * 6) + 1);
+
        switch(type){
            case 1:
            this.kind = "I";
@@ -107,7 +81,7 @@ export class TPiece{
            this.kind = "0";
            break;
            case 3:
-           this.kind = "X";
+           this.kind = "T";
            break;
            case 4:
            this.kind = "J";
@@ -115,55 +89,48 @@ export class TPiece{
            case 5:
            this.kind = "L";
            break;
+           case 6:
+           this.kind = "Z";
+           case 7:
+           this.kind = "S";
 
        }
       
-     //  console.log("About to do next kind:"+this.kind);
-     //this.kind = "L";
-       if(this.kind === "I"){
-           this.player = new IPiece(); //new OPiece();
+
+     
+     if(this.kind === "Z"){
+         this.player = new Player(Zshape)
+     }
+       else if(this.kind === "I"){
+           this.player = new Player(Ishape); //new OPiece();
        }else if(this.kind === "0"){
          //  console.log("Creating Opiece");
-           this.player = new OPiece();
-       }else if(this.kind === "X"){
+           this.player = new Player(OShape);
+       }else if(this.kind === "T"){
         //  console.log("Creating Opiece");
-          this.player = new XPiece();
+          this.player = new Player(Tshape);
       }else if(this.kind === "J"){
-          this.player = new JPiece();
+          this.player = new Player(Jshape);
       }else if(this.kind === "L"){
-          this.player = new LPiece();
+          this.player = new Player(Lshape);
+      }else if(this.kind === "S"){
+          this.player = new Player(Sshape);
       }
     }
 
     draw(boardmap:Piece[][],left:number){
      //   console.log("calling draw");
         if(this.player.done){
-            this.player = new IPiece();
+            this.player = new Player(Zshape);
         }
       var returnval =  this.player.draw(boardmap,left);
       if(this.player.done){
-        this.player = new IPiece();
+        this.player = new Player(Zshape);
         this.initP(boardmap);
     }
     return returnval;
     }
 
-    // drawIFlipped(boardmap:Piece[][],left:number){//verticle
-    //      var valtoreturn = this.player.drawFlipped(boardmap,left);
-    //      if (this.player.done){
-    //         this.initP(boardmap);
-    //      }
-    //      return valtoreturn;
-    // }
-
-    // drawINotFlipped(boardmap:Piece[][],left:number){ //horizontal
-    //     var valtoreturn = this.player.drawNotFlipped(boardmap,left);
-    //     if(this.player.done){
-    //         this.initP(boardmap);
-    //     }
-    //     return valtoreturn;
-      
-    // }
     decr(){
         this.player.decr();
         
@@ -172,9 +139,6 @@ export class TPiece{
 
 
     checkBoardForRows(boardmap:Piece[][]){
-       // console.log("Calling draw");
-      
-
        var height = 20;
        var width = 10;
 
@@ -197,7 +161,7 @@ export class TPiece{
             }
              for(var j = 0; j < width; j++){
                  boardmap[0][j].empty = true;
-                 boardmap[0][j].color = this.originalColor;    // }
+                 boardmap[0][j].color = this.originalColor; 
              }
              this.checkBoardForRows(boardmap);
 
