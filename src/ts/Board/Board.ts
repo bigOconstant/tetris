@@ -9,6 +9,7 @@ export class Board{
     ctx:any;
     backgroundColor:string;
     boardmap:Piece[][];
+    miniboardmap:Piece[][];
     t:TPiece;
     gameInProgress:boolean;
     
@@ -17,15 +18,13 @@ export class Board{
 	
         this.backgroundColor = 'rgb(38, 37, 37)';//black
         this.boardmap = [];
+        this.miniboardmap = [];
         this.zeroBoard();
         this.initBoard();
         this.gameInProgress =  true;
         this.t = new TPiece(this.boardmap);
         var center = this.getCenter();
-         this.left = center - 200;
-
-
- 
+        this.left = center - 200;
 
 
     }
@@ -113,12 +112,23 @@ export class Board{
             var middleList = [];
             for(var j = 0; j < 10; ++j){
                 //columns
-                var pushmePeace = new Piece(localcolor,(j*40),(i*40));
+                var pushmePeace = new Piece(localcolor,(j*40),(i*40),true);
                 pushmePeace.empty = true;
                 middleList.push(pushmePeace);
                 //this.boardmap[i-1][j-1] = new Speace(localcolor,left+(j*40),top+(i*40));
             }
             this.boardmap.push(middleList);
+            middleList = [];
+        }
+        for(var i = 0; i < 4; i++){
+            var middleList = [];
+
+            for(var j = 0; j <4; j++){
+                var pushmePeace = new Piece(localcolor,(j*40),(i*40),false);
+                pushmePeace.empty = true;
+                middleList.push(pushmePeace);
+            }
+            this.miniboardmap.push(middleList);
             middleList = [];
         }
 
@@ -136,10 +146,14 @@ export class Board{
         var center = this.getCenter();
         var left = center - 200;
         this.left = left;
+        let leftOffset = center+250;
 
         this.ctx.strokeStyle = 'rgb(255, 255, 255)';
         this.ctx.lineWidth = 1;
         this.ctx.strokeRect(left, 60, 400, 800);
+
+        this.ctx.strokeRect(center +250, 140,160,160);
+        this.drawLinesMini(leftOffset);
 
         this.drawLines(left);
 
@@ -148,6 +162,11 @@ export class Board{
                entry.draw(this.ctx,left);
            }
         }
+        for(let topentry of this.miniboardmap){
+            for(let entry of topentry){
+                entry.draw(this.ctx,leftOffset);
+            }
+         }
 
 
     }
@@ -172,5 +191,24 @@ export class Board{
             this.ctx.stroke();
         }
 
+    }
+
+    drawLinesMini(left:number){
+        this.ctx.strokeStyle = 'rgb(91, 89, 89)';
+
+        var lineBottom = 140;
+        var lineTop = 140 + 160;
+
+        for(var offset = 40; offset < 160; offset = offset + 40){
+            this.ctx.moveTo(left+offset,lineBottom);
+            this.ctx.lineTo(left+offset,lineTop);
+            this.ctx.stroke();
+        }
+
+        for(var offset = 140; offset < 160+150; offset = offset + 40){
+            this.ctx.moveTo(left,offset);
+            this.ctx.lineTo(left+160,offset);
+            this.ctx.stroke();
+        }
     }
 }
