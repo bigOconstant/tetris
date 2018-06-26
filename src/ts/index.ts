@@ -27,8 +27,9 @@ window.addEventListener("touchstart", downPress, false);
 function check(e:any) {
     board.keyPress(e);
 }
-function downPress(){
-    board.t.upPress(board.boardmap,0);
+function downPress(e){
+    var xPos = e.originalEvent.touches[0].pageX;
+    board.touchFall(xPos);
 }
 
 window.onresize = function(event) { 

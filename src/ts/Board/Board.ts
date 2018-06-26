@@ -25,18 +25,16 @@ export class Board{
          this.left = center - 200;
 
 
-        this.canvas.addEventListener("touchstart", function (e) {
-        var mousePos = this.getTouchPos(this.canvas, e);
-        console.log("Touching");
-        if (mousePos.x > center){
-            this.t.rightPress(this.boardmap,this.left);
-        }else if(mousePos.x < center){
+ 
+
+
+    }
+    touchFall(pos:number){
+        if(pos >=this.getCenter()){
             this.t.leftPress(this.boardmap,this.left);
+        }else{
+            this.t.rightPress(this.boardmap,this.left);
         }
-  
-}, false);
-
-
     }
 
      getTouchPos(canvasDom, touchEvent) {
