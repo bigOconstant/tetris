@@ -29,12 +29,18 @@ export class Board{
 
 
     }
-    touchFall(pos:number){
-        if(pos >=this.getCenter()){
-            this.t.leftPress(this.boardmap,this.left);
-        }else{
-            this.t.rightPress(this.boardmap,this.left);
-        }
+    // touchFall(pos:number){
+    //     if(pos >=this.getCenter()){
+    //         this.t.leftPress(this.boardmap,this.left);
+    //     }else{
+    //         this.t.rightPress(this.boardmap,this.left);
+    //     }
+    // }
+    leftPress(){
+        this.t.leftPress(this.boardmap,this.left);
+    }
+    rightPress(){
+        this.t.rightPress(this.boardmap,this.left);
     }
 
      getTouchPos(canvasDom, touchEvent) {

@@ -29,7 +29,14 @@ function check(e:any) {
 }
 function downPress(e){
     var xPos = e.originalEvent.touches[0].pageX;
-    board.touchFall(xPos);
+
+    this.window.width = window.innerWidth;
+    var center = Math.floor(window.innerWidth /2);
+    if(xPos > center){
+        board.leftPress();
+    }else{
+    board.rightPress();
+    }
 }
 
 window.onresize = function(event) { 
