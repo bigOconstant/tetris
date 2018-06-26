@@ -28,11 +28,17 @@ function check(e:any) {
     board.keyPress(e);
 }
 function downPress(e){
-    var xPos = e.originalEvent.touches[0].pageX;
-
+    var xPos = e.touches[0].pageX;
+    var yPos = e.touches[0].pageY;
     this.window.width = window.innerWidth;
     var center = Math.floor(window.innerWidth /2);
-    if(xPos > center){
+    if(xPos > center -200 && xPos < center+200){
+        if(yPos > 60 && yPos <860){
+            board.upPress();
+        }
+    }
+    else if(xPos < center){
+        
         board.leftPress();
     }else{
     board.rightPress();

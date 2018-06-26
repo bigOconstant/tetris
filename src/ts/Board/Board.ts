@@ -42,6 +42,9 @@ export class Board{
     rightPress(){
         this.t.rightPress(this.boardmap,this.left);
     }
+    upPress(){
+        this.t.upPress(this.boardmap,this.left);
+    }
 
      getTouchPos(canvasDom, touchEvent) {
         var rect = canvasDom.getBoundingClientRect();
