@@ -21,9 +21,14 @@ var timerForLoadingResult = window.setInterval(descTime, 300);
 
 window.addEventListener('keydown',check,false);
 
+window.addEventListener("touchstart", downPress, false);
+
 
 function check(e:any) {
     board.keyPress(e);
+}
+function downPress(){
+    board.t.upPress(board.boardmap,0);
 }
 
 window.onresize = function(event) { 
