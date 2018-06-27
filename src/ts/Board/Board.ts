@@ -1,6 +1,7 @@
 import {Piece} from '../Piece/Piece';
 import {TPiece} from '../Piece/TPiece';
-
+import {GameService} from '../Services/GameService';
+//<reference path='../Services/GameService.ts'/>
 export class Board{
 	canvas:any;
     width:number;
@@ -12,6 +13,7 @@ export class Board{
     miniboardmap:Piece[][];
     t:TPiece;
     gameInProgress:boolean;
+    scoreManager:GameService;
     
     constructor(){
 		this.canvas = document.querySelector('.myCanvas');
@@ -25,6 +27,7 @@ export class Board{
         this.t = new TPiece(this.boardmap);
         var center = this.getCenter();
         this.left = center - 200;
+        this.scoreManager = GameService.getInstance();
 
 
     }
@@ -84,8 +87,12 @@ export class Board{
         if(this.gameInProgress){
          //   console.log("Game in porgress");
         this.t.decr();
+        this.scoreManager.setScore(this.scoreManager.getScore()+10);
         var success = this.t.draw(this.boardmap,this.left);
-
+        // this.t.deletemini(this.miniboardmap);
+        this.cleanMiniBoard(this.miniboardmap);
+        this.t.drawmini(this.miniboardmap);
+        
         if(!success){
             this.gameInProgress = false;
         }
@@ -101,16 +108,17 @@ export class Board{
         this.height = window.innerHeight;
         this.ctx = this.canvas.getContext('2d');
     }
+
     initBoard(){
         var center = this.getCenter();
         var left = center -200;
         this.left = left;
         var top = 60;
         var localcolor = "rgb(66, 66, 66)";
-        for(var i = 0; i < 20; i++){
+        for(var i = 0; i < 20; i++) {
             //i = rows
             var middleList = [];
-            for(var j = 0; j < 10; ++j){
+            for(var j = 0; j < 10; ++j) {
                 //columns
                 var pushmePeace = new Piece(localcolor,(j*40),(i*40),true);
                 pushmePeace.empty = true;
@@ -120,11 +128,11 @@ export class Board{
             this.boardmap.push(middleList);
             middleList = [];
         }
-        for(var i = 0; i < 4; i++){
+        for(var i = 0; i < 4; i++) {
             var middleList = [];
 
-            for(var j = 0; j <4; j++){
-                var pushmePeace = new Piece(localcolor,(j*40),(i*40),false);
+            for(var j = 0; j <4; j++) {
+                var pushmePeace = new Piece(this.backgroundColor,(j*40),(i*40),false);
                 pushmePeace.empty = true;
                 middleList.push(pushmePeace);
             }
@@ -134,6 +142,14 @@ export class Board{
 
    
 
+    }
+    cleanMiniBoard(boardmap:Piece[][]){
+        boardmap.forEach(element => {
+            element.forEach(j => {
+                j.color =  "rgb(38, 37, 37)";
+                j.empty = true;
+            });
+        });
     }
 
     drawBoard(){
@@ -152,8 +168,8 @@ export class Board{
         this.ctx.lineWidth = 1;
         this.ctx.strokeRect(left, 60, 400, 800);
 
-        this.ctx.strokeRect(center +250, 140,160,160);
-        this.drawLinesMini(leftOffset);
+        //this.ctx.strokeRect(center +250, 140,160,160);
+        //this.drawLinesMini(leftOffset);
 
         this.drawLines(left);
 
@@ -167,6 +183,8 @@ export class Board{
                 entry.draw(this.ctx,leftOffset);
             }
          }
+         this.ctx.font = "30px sans-serif";
+         this.ctx.strokeText("Score:"+this.scoreManager.getScore(),left,900);
 
 
     }

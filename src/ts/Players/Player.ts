@@ -13,10 +13,10 @@ export class Player {
     coordinates:Coordinate[];
     state:number;
     matrixes:MatrixSet;
-    constructor(set:MatrixSet){
+    constructor(set:MatrixSet,color:string){
         this.matrixes = set;
     this.coordinates = [];
-        this.setcolor();
+        this.color = color;
         this.done = false;
         this.col = Math.floor((Math.random() * 6) + 2);
         this.state = 1;//Math.floor((Math.random()*4) +1);
@@ -159,33 +159,7 @@ export class Player {
         decr(){
             this.row = this.row + 1;
         }
-        setcolor(){
-            var color = Math.floor((Math.random() * 6) + 1);
-            
-             switch(color){
-                case 0:
-                    this.color = "rgb(11, 98, 237)";
-                    break;
-                case 1:
-                    this.color = "rgb(19, 237, 11)";
-                    break;
-                case 2:
-                    this.color = "rgb(249, 72, 90)";
-                    break;
-                case 3:
-                    this.color = "rgb(245, 255, 66)";
-                    break;
-                case 4:
-                    this.color = "rgb(66, 255, 248)";
-                    break;
-                case 5:
-                    this.color = "rgb(255, 66, 176)";
-                    break;
-                case 6:
-                    this.color = "rgb(255, 154, 66)";
-                    break;
-             }
-         }
+
     
          drawToPoint(boardmap:Piece[][],Cord:Coordinate){
     

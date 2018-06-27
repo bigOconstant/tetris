@@ -1,8 +1,11 @@
 import {Piece} from './Piece/Piece';
 import {TPiece} from './Piece/TPiece'; 
-import {Board} from './Board/Board';  
+import {Board} from './Board/Board'; 
+import {GameService} from './Services/GameService'; 
         
 var board = new Board();
+var GameManager = GameService.getInstance();
+
 function drawBoard(){
     //console.log("Calling draw board")
     board.drawBoard();
@@ -25,9 +28,11 @@ window.addEventListener("touchstart", downPress, false);
 
 
 function check(e:any) {
+    //console.log("Game score:"+GameManager.getScore());
     board.keyPress(e);
 }
 function downPress(e){
+    // console.log("Game score:"+GameManager.getScore());
     var xPos = e.touches[0].pageX;
     var yPos = e.touches[0].pageY;
     this.window.width = window.innerWidth;

@@ -1,6 +1,8 @@
 import {Piece} from '../Piece/Piece';
 import {Player} from '../Players/Player'
 import {Zshape,Ishape,Jshape,Lshape,Sshape,Tshape,OShape} from '../Data';
+import {GameService} from '../Services/GameService';
+import {NextPlayer} from '../Players/NextPlayer'
 export class TPiece{
     kind: string;
     color: string;
@@ -9,13 +11,16 @@ export class TPiece{
     firstTime:Boolean;
     originalColor:string = "rgb(66, 66, 66)";
     player:Player;
-    
+    nPlayer:NextPlayer;
+    gameManager:GameService;
     constructor(boardmap:Piece[][]){
         //this.kind = kind;
-       this.initP(boardmap);
-
+        this.gameManager = GameService.getInstance();
+        this.initP(boardmap);
+        this.nPlayer = new NextPlayer(this.findNextTime(),this.gameManager.getColor());
        
     }
+
 
     printBoard(boardmap:Piece[][]){
         for(var i = 0; i <20; ++i){
@@ -31,6 +36,44 @@ export class TPiece{
 
         }
 
+    }
+    findNextTime(){
+  
+        var typenext = this.gameManager.getNextShape();
+
+        switch (typenext){
+            case "Z" :
+            return Zshape;
+            
+
+            case "I" :
+            return Ishape;
+            
+
+            case "O" :
+            return OShape;
+            
+
+            case "T" :
+            return Tshape;
+            
+
+            case "J" :
+            return Jshape;
+            
+
+            case "L" :
+            return Lshape;
+            
+
+            case "S" :
+            return Sshape;
+
+            default :
+            return OShape;
+           
+            
+        }
     }
 
     initP(boardmap:Piece[][]){
@@ -72,63 +115,105 @@ export class TPiece{
 
     generateType(){
         var type = Math.floor((Math.random() * 6) + 1);
-
+        var tempKind = "";
        switch(type){
            case 1:
-           this.kind = "I";
+           tempKind = "I";
            break;
            case 2:
-           this.kind = "0";
+           tempKind = "0";
            break;
            case 3:
-           this.kind = "T";
+           tempKind = "T";
            break;
            case 4:
-           this.kind = "J";
+           tempKind = "J";
            break;
            case 5:
-           this.kind = "L";
+           tempKind = "L";
            break;
            case 6:
-           this.kind = "Z";
+           tempKind = "Z";
            case 7:
-           this.kind = "S";
+           tempKind = "S";
 
        }
-      
+
+       var colorswitch = Math.floor((Math.random() * 6) + 1);
+        var tempcolor = "";
+       switch(colorswitch){
+          case 0:
+          tempcolor = "rgb(11, 98, 237)";
+              break;
+          case 1:
+          tempcolor = "rgb(19, 237, 11)";
+              break;
+          case 2:
+          tempcolor = "rgb(249, 72, 90)";
+              break;
+          case 3:
+          tempcolor = "rgb(245, 255, 66)";
+              break;
+          case 4:
+          tempcolor = "rgb(66, 255, 248)";
+              break;
+          case 5:
+          tempcolor = "rgb(255, 66, 176)";
+              break;
+          case 6:
+          tempcolor = "rgb(255, 154, 66)";
+              break;
+       }
+
+
+       if(this.gameManager.getNextShape() === ""){
+           this.gameManager.setNextShape(tempKind);
+           this.gameManager.setColor(tempcolor);
+           this.generateType();
+       }
+       this.kind = this.gameManager.getNextShape();
+       this.color = this.gameManager.getColor();
+       this.gameManager.setColor(tempcolor);
+       this.gameManager.setNextShape(tempKind);
+       var currentColor = this.color;
+       
 
      
      if(this.kind === "Z"){
-         this.player = new Player(Zshape)
+         this.player = new Player(Zshape,currentColor)
      }
        else if(this.kind === "I"){
-           this.player = new Player(Ishape); //new OPiece();
+           this.player = new Player(Ishape,currentColor); //new OPiece();
        }else if(this.kind === "0"){
          //  console.log("Creating Opiece");
-           this.player = new Player(OShape);
+           this.player = new Player(OShape,currentColor);
        }else if(this.kind === "T"){
         //  console.log("Creating Opiece");
-          this.player = new Player(Tshape);
+          this.player = new Player(Tshape,currentColor);
       }else if(this.kind === "J"){
-          this.player = new Player(Jshape);
+          this.player = new Player(Jshape,currentColor);
       }else if(this.kind === "L"){
-          this.player = new Player(Lshape);
+          this.player = new Player(Lshape,currentColor);
       }else if(this.kind === "S"){
-          this.player = new Player(Sshape);
+          this.player = new Player(Sshape,currentColor);
       }
     }
 
     draw(boardmap:Piece[][],left:number){
      //   console.log("calling draw");
-        if(this.player.done){
-            this.player = new Player(Zshape);
-        }
+   
       var returnval =  this.player.draw(boardmap,left);
       if(this.player.done){
-        this.player = new Player(Zshape);
         this.initP(boardmap);
+        this.nPlayer = new NextPlayer(this.findNextTime(),this.gameManager.getColor());
     }
     return returnval;
+    }
+    drawmini(boardmap:Piece[][]){
+        this.nPlayer.draw(boardmap);
+    }
+    deletemini(boardmap:Piece[][]){
+        this.nPlayer.deleteCoordinates(boardmap);
     }
 
     decr(){
@@ -151,7 +236,7 @@ export class TPiece{
             }
            }
            if(NeedToDelete){
-
+            this.gameManager.setScore(this.gameManager.getScore()+100);
 
             for(var k = i; k >1;--k){
                 for(var l = 0; l < width; ++l){
