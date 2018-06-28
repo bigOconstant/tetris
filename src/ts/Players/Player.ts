@@ -1,6 +1,7 @@
 import {Piece} from '../Piece/Piece';
 import {Coordinate} from './Coordinate';
-import {MatrixSet} from "../MatrixSet"
+import {MatrixSet} from "../MatrixSet";
+import {GameService} from "../Services/GameService";
 
 
 export class Player {
@@ -13,6 +14,8 @@ export class Player {
     coordinates:Coordinate[];
     state:number;
     matrixes:MatrixSet;
+    scoreManager:GameService;
+
     constructor(set:MatrixSet,color:string){
         this.matrixes = set;
     this.coordinates = [];
@@ -20,6 +23,7 @@ export class Player {
         this.done = false;
         this.col = Math.floor((Math.random() * 6) + 2);
         this.state = 1;//Math.floor((Math.random()*4) +1);
+        this.scoreManager = GameService.getInstance();
 
     };
 
@@ -55,6 +59,7 @@ export class Player {
            
             if(this.checkBelowWrapper(boardmap,this.row+1,this.col)){
                 this.row++;
+                this.scoreManager.setScore(this.scoreManager.getScore()+10);
             }
         }
         draw(boardmap:Piece[][],left:number){

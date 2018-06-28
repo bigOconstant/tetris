@@ -2,6 +2,7 @@ import {Piece} from './Piece/Piece';
 import {TPiece} from './Piece/TPiece'; 
 import {Board} from './Board/Board'; 
 import {GameService} from './Services/GameService'; 
+
         
 var board = new Board();
 var GameManager = GameService.getInstance();
@@ -10,16 +11,39 @@ function drawBoard(){
     //console.log("Calling draw board")
     board.drawBoard();
 };
-var time = 400;
+var time = 1100;
+
 function descTime(){
     board.decrTime();
-    time = time - 50;
+    time = time - 1;
+    // if(time > 0){
+    // setTimeout(descTime(),time);
+    // }
 }
 
 // board.drawBoard();
-var timerForLoadingResult = window.setInterval(drawBoard, 20);
-var timerForLoadingResult = window.setInterval(descTime, 300);
+var timerForLoadingResult1 = window.setInterval(drawBoard, 20);
+//var timerForLoadingResult2 = window.setInterval(descTime, 300);
 
+
+/*
+
+*/
+var counter = 700;
+window.setInterval(function(){counter = counter -10},60000)
+
+var myFunction = function(){
+    clearInterval(interval);
+    board.decrTime();
+    
+    interval = setInterval(myFunction, counter);
+}
+var interval = setInterval(myFunction, counter);
+
+/*
+
+*/
+//window.onload(setTimeout(alert("Setting time out!"),3000));
 
 
 window.addEventListener('keydown',check,false);

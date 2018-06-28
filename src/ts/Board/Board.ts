@@ -87,7 +87,7 @@ export class Board{
         if(this.gameInProgress){
          //   console.log("Game in porgress");
         this.t.decr();
-        this.scoreManager.setScore(this.scoreManager.getScore()+10);
+        
         var success = this.t.draw(this.boardmap,this.left);
         // this.t.deletemini(this.miniboardmap);
         this.cleanMiniBoard(this.miniboardmap);
