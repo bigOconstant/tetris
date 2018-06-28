@@ -186,6 +186,9 @@ export class Board{
          this.ctx.font = "30px sans-serif";
          this.ctx.strokeText("Score:"+this.scoreManager.getScore(),left,900);
 
+         this.ctx.font = "12px sans-serif";
+         this.ctx.strokeText("Typescript Tetris clone by Caleb",left,930);
+
 
     }
     drawLines(left:number){
